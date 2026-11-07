@@ -1,10 +1,11 @@
-# [Project name]
+# BarberFlow
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+SaaS de operação para barbearias: agenda online, clientes, equipe, serviços, caixa, estoque e campanhas.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server
+- `pnpm --filter @workspace/barberflow run dev` — run the web app through its managed workflow
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
@@ -14,31 +15,44 @@ _Replace the heading above with the project's name, and this line with one sente
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
+- Frontend: React + Vite
 - API: Express 5
 - DB: PostgreSQL + Drizzle ORM
+- Auth: Replit-managed Clerk
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 - Build: esbuild (CJS bundle)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/barberflow/src/` — React web app and public booking flow
+- `lib/api-spec/openapi.yaml` — API contract and generated client source
+- `lib/db/src/schema/barberflow.ts` — PostgreSQL tables and tenant memberships
+- `artifacts/api-server/src/routes/` — salon, scheduling, catalog, finance, inventory, campaigns, and public booking routes
+- `artifacts/api-server/src/middlewares/auth.ts` — Clerk session and salon-role checks
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Clerk manages sign-in; salon membership and role checks are enforced by the API.
+- Each Clerk account currently resolves to one salon workspace. All administrative queries are scoped to that salon.
+- Public booking is unauthenticated; administrative routes require a Clerk session and salon membership.
+- WhatsApp actions open a pre-filled `wa.me` conversation. Automated message delivery is not enabled.
+- Plan comparison is informational; subscription checkout and paid-plan enforcement are not connected yet.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Owners can manage appointments, clients, barbers, services, financial entries, inventory, coupons, and salon settings. Customers can book from a salon-specific public page. Completing an appointment records revenue and awards a loyalty point.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Interface language: Portuguese (Brazil); monetary values use Brazilian reais.
+- Visual direction: premium barbershop identity with black, gold, white, and dark gray.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- After editing `lib/api-spec/openapi.yaml`, run `pnpm --filter @workspace/api-spec run codegen` before using generated types.
+- Push development schema changes with `pnpm --filter @workspace/db run push`.
+- Public booking slots use the salon's configured opening hours and 30-minute increments.
 
 ## Pointers
 

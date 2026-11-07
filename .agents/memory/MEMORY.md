@@ -1,0 +1,1 @@
+- [Orval parameter collisions](orval-path-query-collision.md) — GET path and query parameters can produce conflicting generated `*Params` exports in this workspace.

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="48" viewBox="0 0 180 48" fill="none">
+  <rect x="1" y="4" width="40" height="40" rx="11" fill="#D4AF37"/>
+  <path d="M12 14l18 18M30 14L12 32M11 12l3-3 5 5-3 3-5-5Zm12 12 3-3 5 5-3 3-5-5Zm-8 0 3 3-5 5-3-3 5-5Zm12-12 3 3-5 5-3-3 5-5Z" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="51" y="25" fill="#F4F0E6" font-family="DM Sans, sans-serif" font-size="20" font-weight="700" letter-spacing="-1">barber</text>
+  <text x="112" y="25" fill="#D4AF37" font-family="DM Sans, sans-serif" font-size="20" font-weight="700" letter-spacing="-1">flow</text>
+  <text x="52" y="38" fill="#AAA79F" font-family="DM Sans, sans-serif" font-size="7" font-weight="500" letter-spacing="2">SHOP OPERATIONS</text>
+</svg>
