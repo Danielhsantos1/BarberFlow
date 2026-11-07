@@ -36,6 +36,8 @@ writeFileSync(
       shouldAddHelpers: false,
       supportsResponseStreaming: true,
       maxDuration: 30,
+      // São Paulo, next to the Neon database (aws-sa-east-1).
+      regions: ["gru1"],
     },
     null,
     2,

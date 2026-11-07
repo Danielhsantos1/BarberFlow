@@ -6,6 +6,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import router from "./routes";
+import healthRouter from "./routes/health";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -42,6 +43,9 @@ const corsOrigins = process.env.CORS_ORIGIN?.split(",")
 if (corsOrigins?.length) {
   app.use(cors({ credentials: true, origin: corsOrigins }));
 }
+
+// Health check answers even if auth is misconfigured (useful for diagnosing deploys).
+app.use("/api", healthRouter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
