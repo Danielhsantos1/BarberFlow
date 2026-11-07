@@ -1,0 +1,251 @@
+Você é um especialista em desenvolvimento de sistemas SaaS. Crie uma aplicação web completa e profissional para gestão de barbearias, com foco em agendamentos online, controle financeiro, fidelização de clientes e gestão da equipe.
+
+OBJETIVO DO SISTEMA
+Desenvolver um sistema SaaS moderno para barbearias que permita aos clientes agendar horários online e aos proprietários gerenciar toda a operação da empresa através de um painel administrativo completo.
+
+TIPO DE SISTEMA
+- SaaS Multi-Tenant
+- Cada barbearia possui sua própria conta e dados isolados
+- Plano gratuito e planos pagos
+- Responsivo para desktop, tablet e celular
+- Interface moderna e profissional
+
+TECNOLOGIAS
+- Frontend moderno e responsivo
+- Backend escalável
+- Banco de dados relacional
+- Autenticação segura
+- Integração com WhatsApp
+- Sistema preparado para hospedagem em nuvem
+
+TELAS E PÁGINAS
+
+1. LANDING PAGE
+- Apresentação do sistema
+- Benefícios
+- Recursos
+- Planos e preços
+- Depoimentos
+- FAQ
+- CTA para teste grátis
+- Botão WhatsApp flutuante
+
+2. LOGIN
+- E-mail e senha
+- Recuperação de senha
+- Login social opcional
+- Lembrar acesso
+
+3. CADASTRO DE BARBEARIA
+- Nome da barbearia
+- CNPJ opcional
+- Endereço
+- Telefone
+- WhatsApp
+- Logo
+- Horário de funcionamento
+
+4. DASHBOARD ADMINISTRATIVO
+- Total de agendamentos
+- Faturamento do dia
+- Clientes cadastrados
+- Serviços mais vendidos
+- Próximos horários
+- Gráficos de desempenho
+- Indicadores de crescimento
+
+5. GESTÃO DE CLIENTES
+- Cadastro completo
+- Histórico de visitas
+- Histórico financeiro
+- Últimos serviços realizados
+- Observações
+- Fotos do cliente
+- Preferências de corte
+- Sistema de fidelidade
+
+6. GESTÃO DE BARBEIROS
+- Cadastro de barbeiros
+- Especialidades
+- Horários de trabalho
+- Comissão
+- Agenda individual
+- Controle de desempenho
+
+7. AGENDAMENTOS
+- Calendário completo
+- Visualização por dia
+- Semana
+- Mês
+- Arrastar compromissos
+- Confirmação automática
+- Cancelamento
+- Reagendamento
+
+8. AGENDAMENTO ONLINE DO CLIENTE
+- Escolha de serviço
+- Escolha do barbeiro
+- Escolha do horário
+- Confirmação automática
+- Integração com WhatsApp
+
+9. SERVIÇOS
+- Corte masculino
+- Barba
+- Sobrancelha
+- Hidratação
+- Pigmentação
+- Combo de serviços
+- Serviços personalizados
+
+10. CONTROLE FINANCEIRO
+- Entradas
+- Saídas
+- Fluxo de caixa
+- Lucro líquido
+- Relatórios financeiros
+- Gráficos
+- Exportação PDF e Excel
+
+11. ESTOQUE
+- Produtos
+- Quantidade
+- Estoque mínimo
+- Fornecedores
+- Alertas automáticos
+- Movimentação
+
+12. MARKETING
+- Campanhas promocionais
+- Cupons
+- Cashback
+- Programa de fidelidade
+- Mensagens automáticas
+
+13. CONFIGURAÇÕES
+- Dados da empresa
+- Logo
+- Redes sociais
+- Integrações
+- Notificações
+- Usuários e permissões
+
+14. ÁREA DO CLIENTE
+- Meus agendamentos
+- Histórico de serviços
+- Pontos de fidelidade
+- Perfil
+- Reagendamento
+
+FUNCIONALIDADES ESSENCIAIS
+
+- Cadastro de clientes
+- Cadastro de barbeiros
+- Gestão de agenda
+- Gestão de serviços
+- Relatórios
+- Dashboard em tempo real
+- Controle financeiro
+- Gestão de estoque
+- Multiusuários
+- Controle de permissões
+- Notificações automáticas
+
+FUNCIONALIDADES AVANÇADAS
+
+- Inteligência artificial para sugerir horários vagos
+- IA para previsão de faturamento
+- IA para campanhas de marketing
+- Programa de pontos
+- Cashback
+- Avaliação da experiência do cliente
+- Ranking dos barbeiros
+- Indicadores de produtividade
+
+INTEGRAÇÃO WHATSAPP
+
+Após qualquer ação importante:
+- Novo agendamento
+- Confirmação
+- Reagendamento
+- Cancelamento
+- Promoções
+
+Exibir botão:
+"Falar no WhatsApp"
+
+Enviar mensagens automáticas com modelo personalizável.
+
+DESIGN DA INTERFACE
+
+ESTILO:
+- Moderno
+- Premium
+- Elegante
+- Inspirado em barbearias de alto padrão
+
+CORES:
+- Preto #121212
+- Dourado #D4AF37
+- Branco #FFFFFF
+- Cinza escuro #1E1E1E
+
+TIPOGRAFIA:
+- Moderna
+- Fácil leitura
+- Visual premium
+
+COMPONENTES:
+- Cards modernos
+- Gráficos sofisticados
+- Botões elegantes
+- Ícones profissionais
+
+RESPONSIVIDADE
+
+O sistema deve funcionar perfeitamente em:
+- iPhone
+- Android
+- Tablets
+- Desktop
+
+Criar menu mobile moderno com navegação intuitiva.
+
+FLUXO DO USUÁRIO
+
+CLIENTE:
+Landing Page → Cadastro → Escolha Serviço → Escolha Barbeiro → Escolha Horário → Confirmação → WhatsApp → Atendimento → Avaliação
+
+ADMINISTRADOR:
+Login → Dashboard → Gestão de Agenda → Controle Financeiro → Relatórios → Marketing
+
+SEGURANÇA
+
+- Criptografia de senhas
+- JWT Authentication
+- Controle de acesso por perfil
+- Backup automático
+- Proteção contra SQL Injection
+- Logs de auditoria
+
+RELATÓRIOS
+
+- Faturamento diário
+- Faturamento mensal
+- Serviços mais vendidos
+- Clientes recorrentes
+- Produtividade dos barbeiros
+- Fluxo de caixa
+- Ticket médio
+
+EXTRAS
+
+- Modo escuro
+- Upload de fotos
+- Exportação PDF
+- Exportação Excel
+- Impressão de relatórios
+- Notificações push
+- Sistema de avaliações
+
+Crie todo o sistema pronto para produção, com banco de dados completo, estrutura escalável, UX moderna, interface premium, regras de negócio profissionais e experiência semelhante aos melhores softwares de gestão de barbearia do mercado.
