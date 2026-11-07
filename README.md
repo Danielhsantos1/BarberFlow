@@ -4,7 +4,7 @@ SaaS de operação para barbearias: agenda online, clientes, equipe, serviços, 
 
 ## Pré-requisitos
 
-- Node.js 22.9+ (recomendado 24)
+- Node.js 24
 - pnpm 10 (`corepack enable` já instala a versão certa)
 - Um banco PostgreSQL (Neon, Supabase, Railway ou local)
 - Uma conta no [Clerk](https://dashboard.clerk.com) para o login

@@ -30,7 +30,7 @@ writeFileSync(
   path.join(fn, ".vc-config.json"),
   JSON.stringify(
     {
-      runtime: "nodejs22.x",
+      runtime: "nodejs24.x",
       handler: "handler.mjs",
       launcherType: "Nodejs",
       shouldAddHelpers: false,
