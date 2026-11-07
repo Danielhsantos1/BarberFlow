@@ -284,7 +284,7 @@ router.post(
       getAssignedBarber(salonId, input.barberId),
     ]);
     if (!service || !barber) {
-      res.status(400).json({ error: "Choose an active service and barber" });
+      res.status(400).json({ error: "Escolha um serviço e um profissional ativos" });
       return;
     }
 
@@ -299,7 +299,7 @@ router.post(
         endTime,
       )
     ) {
-      res.status(409).json({ error: "Barber is already booked in that time slot" });
+      res.status(409).json({ error: "Este profissional já tem um horário marcado nesse período" });
       return;
     }
 
@@ -316,7 +316,7 @@ router.post(
         )
         .limit(1);
       if (!client) {
-        res.status(404).json({ error: "Client not found" });
+        res.status(404).json({ error: "Cliente não encontrado" });
         return;
       }
     } else {
@@ -398,7 +398,7 @@ router.patch(
       )
       .limit(1);
     if (!existing) {
-      res.status(404).json({ error: "Appointment not found" });
+      res.status(404).json({ error: "Agendamento não encontrado" });
       return;
     }
 
@@ -410,7 +410,7 @@ router.patch(
       getAssignedBarber(salonId, barberId),
     ]);
     if (!service || !barber) {
-      res.status(400).json({ error: "Choose an active service and barber" });
+      res.status(400).json({ error: "Escolha um serviço e um profissional ativos" });
       return;
     }
     const date = input.date ? toDateString(input.date) : existing.date;
@@ -426,7 +426,7 @@ router.patch(
         existing.id,
       )
     ) {
-      res.status(409).json({ error: "Barber is already booked in that time slot" });
+      res.status(409).json({ error: "Este profissional já tem um horário marcado nesse período" });
       return;
     }
 
@@ -478,7 +478,7 @@ router.delete(
       )
       .returning({ id: appointmentsTable.id });
     if (!appointment) {
-      res.status(404).json({ error: "Appointment not found" });
+      res.status(404).json({ error: "Agendamento não encontrado" });
       return;
     }
     res.sendStatus(204);

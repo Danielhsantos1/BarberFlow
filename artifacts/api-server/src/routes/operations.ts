@@ -212,7 +212,7 @@ router.patch(
       )
       .returning();
     if (!item) {
-      res.status(404).json({ error: "Inventory item not found" });
+      res.status(404).json({ error: "Item de estoque não encontrado" });
       return;
     }
     res.json(UpdateInventoryItemResponse.parse(toInventoryItem(item)));
@@ -238,7 +238,7 @@ router.delete(
       )
       .returning({ id: inventoryItemsTable.id });
     if (!item) {
-      res.status(404).json({ error: "Inventory item not found" });
+      res.status(404).json({ error: "Item de estoque não encontrado" });
       return;
     }
     res.sendStatus(204);

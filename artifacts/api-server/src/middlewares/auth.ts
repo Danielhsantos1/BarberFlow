@@ -16,7 +16,7 @@ declare global {
 export const requireAuthenticatedUser: RequestHandler = (req, res, next) => {
   const userId = getAuth(req).userId;
   if (!userId) {
-    res.status(401).json({ error: "Authentication required" });
+    res.status(401).json({ error: "Faça login para continuar" });
     return;
   }
 
@@ -30,7 +30,7 @@ export const requireSalonMembership: RequestHandler = async (
   next,
 ): Promise<void> => {
   if (!req.clerkUserId) {
-    res.status(401).json({ error: "Authentication required" });
+    res.status(401).json({ error: "Faça login para continuar" });
     return;
   }
 
@@ -44,7 +44,7 @@ export const requireSalonMembership: RequestHandler = async (
     .limit(1);
 
   if (!membership) {
-    res.status(404).json({ error: "Salon onboarding is required" });
+    res.status(404).json({ error: "Cadastre sua barbearia para continuar" });
     return;
   }
 
@@ -56,7 +56,7 @@ export const requireSalonMembership: RequestHandler = async (
 export function requireSalonRoles(...roles: string[]): RequestHandler {
   return (req, res, next) => {
     if (!req.salonRole || !roles.includes(req.salonRole)) {
-      res.status(403).json({ error: "Insufficient salon permissions" });
+      res.status(403).json({ error: "Você não tem permissão para esta ação" });
       return;
     }
     next();

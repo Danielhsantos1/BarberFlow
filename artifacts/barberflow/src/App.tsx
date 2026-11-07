@@ -25,6 +25,7 @@ import {
 } from '@workspace/api-client-react';
 import type { Appointment } from '@workspace/api-client-react';
 import './index.css';
+import { PrivacyPage, TermsPage } from './pages/legal';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 20_000 } } });
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -86,7 +87,15 @@ const routeNames: Record<string, string> = Object.fromEntries(navItems.map(item 
 const money = (value?: number) => (value ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const datePt = (date?: string) => date ? new Date(`${date}T12:00:00`).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : '—';
 const initials = (name = '') => name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase() || 'BF';
-const errorText = (error: unknown) => error instanceof Error ? error.message : 'Não foi possível concluir. Tente novamente.';
+const errorText = (error: unknown): string => {
+  const fallback = 'Não foi possível concluir. Tente novamente.';
+  const status = (error as { status?: number } | null)?.status;
+  const apiMessage = (error as { data?: { error?: unknown } } | null)?.data?.error;
+  if (status === 400) return 'Confira os dados preenchidos e tente novamente.';
+  if (status && status < 500 && typeof apiMessage === 'string') return apiMessage;
+  return fallback;
+};
+const isNotFound = (error: unknown) => (error as { status?: number } | null)?.status === 404;
 
 function Brand({ small = false }: { small?: boolean }) {
   return <div className="flex items-center gap-3">
@@ -135,8 +144,8 @@ function Landing() {
     <section id="plataforma" className="border-y border-[#2d2b26] bg-[#191919]"><div className="mx-auto grid max-w-[1240px] gap-10 px-6 py-14 md:grid-cols-[.7fr_1.3fr] md:items-center"><div className="brand-display text-3xl font-medium leading-tight">Feito para quem<br />vive a barbearia.</div><div className="grid gap-6 sm:grid-cols-3">{[['01', 'Agenda que funciona', 'Visualize a semana, confirme horários e acompanhe cada cadeira.'], ['02', 'Clientes que voltam', 'Histórico e pontos de fidelidade para cuidar de cada visita.'], ['03', 'Caixa sem surpresa', 'Receitas, despesas e estoque organizados num relance.']].map(item => <div key={item[0]} className="border-l border-[#d4af3760] pl-4"><div className="text-[10px] font-mono text-[#d4af37]">{item[0]}</div><h3 className="mt-3 text-sm font-semibold">{item[1]}</h3><p className="mt-2 text-xs leading-5 text-[#918d84]">{item[2]}</p></div>)}</div></div></section>
     <section id="booking" className="mx-auto grid max-w-[1240px] gap-12 px-6 py-20 md:grid-cols-2 md:items-center"><div className="order-2 border border-[#3a372d] bg-[#1e1e1e] p-6 md:order-1"><div className="flex items-center justify-between"><div><div className="text-[9px] uppercase tracking-[.2em] text-[#a49d8b]">Sua página de agendamento</div><div className="brand-display mt-2 text-xl">Barbearia Central</div></div><div className="grid h-11 w-11 place-items-center rounded-xl bg-[#d4af37] text-[#121212]"><Scissors /></div></div><div className="mt-7 grid grid-cols-7 gap-1.5">{['S','T','Q','Q','S','S','D'].map((day,i)=><span key={`${day}-${i}`} className="py-2 text-center text-[10px] text-[#8c887e]">{day}</span>)}{Array.from({length:14},(_,i)=><span key={i} className={`grid aspect-square place-items-center rounded-lg text-[11px] ${i===9?'bg-[#d4af37] font-bold text-[#17140b]':'bg-[#292929] text-[#b4b0a7]'}`}>{i+10}</span>)}</div><div className="mt-5 flex items-center justify-between border-t border-[#38352f] pt-4 text-xs"><span className="text-[#9e998d]">Quarta, 19 de junho</span><span className="text-[#d4af37]">4 horários livres</span></div></div>
       <div className="order-1 md:order-2"><div className="mb-4 text-[10px] uppercase tracking-[.23em] text-[#d4af37]">Seu negócio, no bolso do cliente</div><h2 className="brand-display text-4xl font-semibold leading-tight sm:text-5xl">Uma agenda aberta,<br />mesmo com a porta fechada.</h2><p className="mt-5 max-w-lg text-sm leading-7 text-[#a6a197]">Compartilhe um link e deixe cada cliente escolher serviço, profissional e horário. Os pedidos entram direto no seu fluxo de trabalho.</p><Link href="/sign-up" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[#e2c54e]">Criar minha página <ArrowRight size={15} /></Link></div></section>
-    <section id="planos" className="bg-[#eeeae0] px-6 py-20 text-[#171717]"><div className="mx-auto max-w-[1240px]"><div className="mb-10 flex flex-wrap items-end justify-between gap-4"><div><div className="text-[10px] uppercase tracking-[.22em] text-[#9b7b1a]">Planos sem surpresa</div><h2 className="brand-display mt-3 text-4xl font-semibold">Comece no seu ritmo.</h2></div><p className="max-w-sm text-sm leading-6 text-[#747067]">Escolha o essencial agora. A operação cresce junto com você.</p></div><div className="grid gap-4 lg:grid-cols-3">{[{name:'Essencial',price:'Grátis',detail:'Para colocar a rotina em ordem.',items:['Agenda e cadastro de clientes','Serviços e equipe','Agendamento online']},{name:'Pro',price:'R$ 49',detail:'Para uma barbearia em movimento.',items:['Tudo do Essencial','Financeiro e estoque','Campanhas de fidelidade'],highlight:true},{name:'Business',price:'R$ 99',detail:'Para crescer com mais controle.',items:['Tudo do Pro','Mais estrutura para a equipe','Prioridade no suporte']}].map(plan=><div key={plan.name} className={`flex min-h-[280px] flex-col p-7 ${plan.highlight?'bg-[#171717] text-[#f4f0e6]':'border border-[#d9d4c7] bg-[#f8f6f0]'}`}><div className="flex items-center justify-between"><h3 className="brand-display text-xl font-semibold">{plan.name}</h3>{plan.highlight&&<span className="bg-[#d4af37] px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-[#171717]">Mais escolhido</span>}</div><p className="mt-2 text-xs text-[#8d887d]">{plan.detail}</p><div className="mt-6 brand-display text-4xl font-semibold">{plan.price}<span className="ml-1 text-xs font-normal text-[#969187]">{plan.price!=='Grátis'&&'/ mês'}</span></div><ul className="mt-6 flex-1 space-y-2">{plan.items.map(feature=><li key={feature} className="flex items-center gap-2 text-xs"><Check size={13} className="text-[#b3942e]" />{feature}</li>)}</ul><Link href="/sign-up" className={`mt-7 block text-center text-xs font-bold ${plan.highlight?'btn-primary':'btn-secondary'}`}>Escolher {plan.name}</Link></div>)}</div></div></section>
-    <footer className="flex flex-wrap items-center justify-between gap-4 border-t border-[#34322d] px-6 py-8 text-xs text-[#807c73]"><Brand small /><span>Operação afiada. Atendimento com presença.</span><span>© BarberFlow 2025</span></footer>
+    <section id="planos" className="bg-[#eeeae0] px-6 py-20 text-[#171717]"><div className="mx-auto max-w-[1240px]"><div className="mb-10 flex flex-wrap items-end justify-between gap-4"><div><div className="text-[10px] uppercase tracking-[.22em] text-[#9b7b1a]">Planos sem surpresa</div><h2 className="brand-display mt-3 text-4xl font-semibold">Comece no seu ritmo.</h2></div><p className="max-w-sm text-sm leading-6 text-[#747067]"><b className="text-[#171717]">Fase de lançamento:</b> todos os recursos estão liberados gratuitamente. Os planos pagos chegam em breve, com aviso prévio.</p></div><div className="grid gap-4 lg:grid-cols-3">{[{name:'Essencial',price:'Grátis',detail:'Para colocar a rotina em ordem.',items:['Agenda e cadastro de clientes','Serviços e equipe','Agendamento online']},{name:'Pro',price:'Em breve',detail:'Para uma barbearia em movimento.',items:['Tudo do Essencial','Financeiro e estoque','Campanhas de fidelidade'],highlight:true},{name:'Business',price:'Em breve',detail:'Para crescer com mais controle.',items:['Tudo do Pro','Mais estrutura para a equipe','Prioridade no suporte']}].map(plan=><div key={plan.name} className={`flex min-h-[280px] flex-col p-7 ${plan.highlight?'bg-[#171717] text-[#f4f0e6]':'border border-[#d9d4c7] bg-[#f8f6f0]'}`}><div className="flex items-center justify-between"><h3 className="brand-display text-xl font-semibold">{plan.name}</h3>{plan.highlight&&<span className="bg-[#d4af37] px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-[#171717]">Mais escolhido</span>}</div><p className="mt-2 text-xs text-[#8d887d]">{plan.detail}</p><div className="mt-6 brand-display text-4xl font-semibold">{plan.price}<span className="ml-1 text-xs font-normal text-[#969187]"></span></div><ul className="mt-6 flex-1 space-y-2">{plan.items.map(feature=><li key={feature} className="flex items-center gap-2 text-xs"><Check size={13} className="text-[#b3942e]" />{feature}</li>)}</ul><Link href="/sign-up" className={`mt-7 block text-center text-xs font-bold ${plan.highlight?'btn-primary':'btn-secondary'}`}>{plan.price==='Grátis'?'Começar grátis':'Usar grátis no lançamento'}</Link></div>)}</div></div></section>
+    <footer className="flex flex-wrap items-center justify-between gap-4 border-t border-[#34322d] px-6 py-8 text-xs text-[#807c73]"><Brand small /><span>Operação afiada. Atendimento com presença.</span><span className="flex items-center gap-4"><Link href="/termos" className="hover:text-white">Termos de Uso</Link><Link href="/privacidade" className="hover:text-white">Privacidade</Link><span>© BarberFlow {new Date().getFullYear()}</span></span></footer>
   </main>;
 }
 
@@ -202,7 +211,9 @@ function PrivatePage({ children }: { children: ReactNode }) {
   if (!isLoaded) return <Loading label="Verificando sua conta" />;
   if (!isSignedIn) return <Redirect to="/" />;
   if (salonQuery.isLoading) return <Loading />;
-  if (salonQuery.isError) return <Redirect to="/onboarding" />;
+  if (salonQuery.isError) return isNotFound(salonQuery.error)
+    ? <Redirect to="/onboarding" />
+    : <main className="grid min-h-[100dvh] place-items-center bg-[#f7f5f0]"><ErrorState message="Não foi possível carregar sua barbearia." retry={() => void salonQuery.refetch()} /></main>;
   return <PageShell salon={salonQuery.data?.salon}>{children}</PageShell>;
 }
 
@@ -210,7 +221,7 @@ function HomeRedirect() {
   return <><Show when="signed-in"><Redirect to="/dashboard" /></Show><Show when="signed-out"><Landing /></Show></>;
 }
 function SignInPage() { return <div className="grain flex min-h-[100dvh] items-center justify-center bg-[#121212] px-4"><SignIn routing="path" path={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`} /></div>; }
-function SignUpPage() { return <div className="grain flex min-h-[100dvh] items-center justify-center bg-[#121212] px-4"><SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} /></div>; }
+function SignUpPage() { return <div className="grain flex min-h-[100dvh] items-center justify-center bg-[#121212] px-4"><div className="flex flex-col items-center gap-4"><SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} /><p className="max-w-[440px] text-center text-[11px] leading-5 text-[#96928a]">Ao criar uma conta, você concorda com os <Link href="/termos" className="underline hover:text-white">Termos de Uso</Link> e a <Link href="/privacidade" className="underline hover:text-white">Política de Privacidade</Link>.</p></div></div>; }
 
 function DashboardPage() {
   const { data, isLoading, isError, refetch } = useGetDashboard();
@@ -338,8 +349,8 @@ function BookingPage() {
       <div><div className="mb-2 flex items-center justify-between"><span className="text-xs font-semibold">4. Horários disponíveis</span><button type="button" className="text-[11px] font-semibold text-[#8d721b]" disabled={!serviceId||!date||availability.isPending} onClick={()=>availability.mutate({slug,data:{date,serviceId,barberId:barberId||null}})}>{availability.isPending?'Buscando...':'Ver horários'}</button></div>{availability.isError&&<p className="text-xs text-[#a74e41]">Não foi possível consultar os horários. Tente novamente.</p>}<div className="flex flex-wrap gap-2">{slots.map((available,index)=><button key={`${available.startTime}-${index}`} type="button" onClick={()=>{setSlot(available.startTime);setBarberId(available.barberId)}} className={`rounded-lg border px-3 py-2 text-xs font-semibold ${slot===available.startTime?'border-[#d4af37] bg-[#d4af37] text-[#17140b]':'border-[#e5e0d5] bg-white text-[#48453f]'}`}>{available.startTime} <span className="font-normal opacity-70">{available.barberName}</span></button>)}</div>{availability.isSuccess&&slots.length===0&&<p className="mt-2 text-xs text-[#77736c]">Sem horários livres nesta data.</p>}</div>
       <div className="grid gap-4 sm:grid-cols-2"><label><span className="mb-2 block text-xs font-semibold">Seu nome</span><input className="field" required value={clientName} onChange={e=>setClientName(e.target.value)}/></label><label><span className="mb-2 block text-xs font-semibold">WhatsApp</span><input className="field" required value={clientPhone} onChange={e=>setClientPhone(e.target.value)}/></label></div>
       {selectedService&&<div className="flex items-center justify-between rounded-xl bg-[#f6f3eb] p-4 text-xs"><span className="font-medium">{selectedService.name} · {slot||'horário a definir'}</span><b>{money(selectedService.price)}</b></div>}
-      {book.isError&&<p className="text-xs text-[#a74e41]">{errorText(book.error)}</p>}<button type="submit" className="btn-primary w-full py-3" disabled={!slot||book.isPending}>{book.isPending?'Enviando pedido...':'Confirmar agendamento'}</button><p className="text-center text-[10px] text-[#8a867d]">Ao confirmar, a equipe da barbearia recebe seu agendamento.</p>
-    </form>}</div><footer className="mt-6 text-center text-[10px] text-[#8c887e]">Agendamento com BarberFlow</footer></div></main>;
+      {book.isError&&<p className="text-xs text-[#a74e41]">{errorText(book.error)}</p>}<button type="submit" className="btn-primary w-full py-3" disabled={!slot||book.isPending}>{book.isPending?'Enviando pedido...':'Confirmar agendamento'}</button><p className="text-center text-[10px] text-[#8a867d]">Ao confirmar, a equipe da barbearia recebe seu nome, WhatsApp e horário para realizar o atendimento. Veja a <Link href="/privacidade" className="underline">Política de Privacidade</Link>.</p>
+    </form>}</div><footer className="mt-6 text-center text-[10px] text-[#8c887e]">Agendamento com BarberFlow · <Link href="/termos" className="underline">Termos</Link> · <Link href="/privacidade" className="underline">Privacidade</Link></footer></div></main>;
 }
 
 function CacheInvalidator() {
@@ -358,6 +369,8 @@ function AuthRoutes() {
       <Route path="/sign-in/*?" component={SignInPage}/><Route path="/sign-up/*?" component={SignUpPage}/>
       <Route path="/onboarding" component={OnboardingPage}/>
       <Route path="/book/:slug" component={BookingPage}/>
+      <Route path="/termos" component={TermsPage}/>
+      <Route path="/privacidade" component={PrivacyPage}/>
       <Route path="/dashboard"><PrivatePage><DashboardPage/></PrivatePage></Route>
       <Route path="/agenda"><PrivatePage><AgendaPage/></PrivatePage></Route>
       <Route path="/clientes"><PrivatePage><ClientsPage/></PrivatePage></Route>
@@ -390,6 +403,8 @@ function PageMeta() {
       '/estoque': 'Estoque',
       '/marketing': 'Marketing',
       '/configuracoes': 'Configurações',
+      '/termos': 'Termos de Uso',
+      '/privacidade': 'Política de Privacidade',
     };
     const isBooking = page.startsWith('/book/');
     const title = isBooking ? 'Agendamento online' : titles[page] || 'BarberFlow';
