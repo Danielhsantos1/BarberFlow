@@ -53,3 +53,6 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Replit Agent conversation transcripts
+.conversation/
