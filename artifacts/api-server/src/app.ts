@@ -1,17 +1,17 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
-import { publishableKeyFromHost } from "@clerk/shared/keys";
 import pinoHttp from "pino-http";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import router from "./routes";
 import { logger } from "./lib/logger";
-import {
-  CLERK_PROXY_PATH,
-  clerkProxyMiddleware,
-  getClerkProxyHost,
-} from "./middlewares/clerkProxyMiddleware";
 
 const app: Express = express();
+
+// Behind a reverse proxy (Render, Railway, Fly, Nginx…) so req.protocol/ip are correct.
+app.set("trust proxy", 1);
 
 app.use(
   pinoHttp({
@@ -33,21 +33,36 @@ app.use(
   }),
 );
 
-// The Clerk proxy streams raw request bodies, so it must precede body parsing.
-app.use(CLERK_PROXY_PATH, clerkProxyMiddleware());
+// The web app is served from the same origin (Vite proxy in dev, static files
+// below in production), so CORS is only needed when CORS_ORIGIN is set
+// explicitly, e.g. a frontend hosted on another domain.
+const corsOrigins = process.env.CORS_ORIGIN?.split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+if (corsOrigins?.length) {
+  app.use(cors({ credentials: true, origin: corsOrigins }));
+}
 
-app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  clerkMiddleware((req) => ({
-    publishableKey: publishableKeyFromHost(
-      getClerkProxyHost(req) ?? "",
-      process.env.CLERK_PUBLISHABLE_KEY,
-    ),
-  })),
-);
+// Reads CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY from the environment.
+app.use(clerkMiddleware());
 
 app.use("/api", router);
+
+// In production, serve the built web app (artifacts/barberflow/dist/public).
+const staticDir = path.resolve(
+  // dist/index.mjs -> ../../barberflow/dist/public
+  process.env.STATIC_DIR ??
+    path.join(path.dirname(fileURLToPath(import.meta.url)), "../../barberflow/dist/public"),
+);
+if (existsSync(path.join(staticDir, "index.html"))) {
+  app.use(express.static(staticDir, { index: false, maxAge: "1h" }));
+  // SPA fallback: any non-API GET returns index.html.
+  app.get(/^(?!\/api(\/|$)).*/, (_req, res) => {
+    res.sendFile(path.join(staticDir, "index.html"));
+  });
+  logger.info({ staticDir }, "Serving web app");
+}
 
 export default app;

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { ClerkProvider, SignIn, SignUp, Show, useAuth, useClerk } from '@clerk/react';
-import { publishableKeyFromHost } from '@clerk/react/internal';
 import { shadcn } from '@clerk/themes';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { Link, Redirect, Route, Router as WouterRouter, Switch, useLocation, useParams } from 'wouter';
@@ -29,10 +28,9 @@ import './index.css';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 20_000 } } });
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
-const clerkPubKey = publishableKeyFromHost(window.location.hostname, import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
-const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const stripBase = (path: string) => basePath && path.startsWith(basePath) ? path.slice(basePath.length) || '/' : path;
-if (!clerkPubKey) throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY in .env file');
+if (!clerkPubKey) throw new Error('VITE_CLERK_PUBLISHABLE_KEY não definida no .env (veja .env.example)');
 
 function whatsappHref(phone: string, message: string): string | null {
   const digits = phone.replace(/\D/g, '');
@@ -352,7 +350,7 @@ function CacheInvalidator() {
 
 function AuthRoutes() {
   const [,setLocation]=useLocation();
-  return <ClerkProvider publishableKey={clerkPubKey} proxyUrl={clerkProxyUrl} appearance={clerkAppearance} signInUrl={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`}
+  return <ClerkProvider publishableKey={clerkPubKey} appearance={clerkAppearance} signInUrl={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`}
     localization={{signIn:{start:{title:'Bom ter você de volta',subtitle:'Entre para cuidar da sua barbearia'}},signUp:{start:{title:'Seu próximo passo começa aqui',subtitle:'Crie sua conta BarberFlow'}}}}
     routerPush={to=>setLocation(stripBase(to))} routerReplace={to=>setLocation(stripBase(to),{replace:true})}>
     <QueryClientProvider client={queryClient}><CacheInvalidator/><PageMeta/><Switch>
