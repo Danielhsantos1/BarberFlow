@@ -1,9 +1,14 @@
 # Reels do Kortta (9:16 · 1080×1920 · 38 s)
 
 Vídeo publicitário gerado por código: uma composição HTML animada quadro a quadro
-(`composition.html`), capturada com Playwright e encodada com ffmpeg. As telas usadas
-são capturas reais do sistema (`assets/`) e a landing page é recriada a partir do
-código real de `artifacts/barberflow/src/App.tsx`.
+(`composition.html`), capturada com Playwright e encodada com ffmpeg.
+
+As telas do sistema (Visão geral, Agenda, Marketing) são **recriadas** com a mesma
+marcação, classes Tailwind e CSS do `artifacts/barberflow/src/App.tsx`/`index.css`, preenchidas
+com dados fictícios da **Barbearia Dom Corte** (`screens/demo-data.cjs`, com checagens de
+coerência: receita do mês = soma da semana = soma dos serviços concluídos; 12 agendamentos hoje).
+Gere as telas com `node scripts/build-screens.cjs <dir com @tailwindcss/cli instalado>`.
+A landing page também é recriada a partir do `App.tsx`.
 
 | Arquivo | O que é |
 | --- | --- |
@@ -19,6 +24,7 @@ código real de `artifacts/barberflow/src/App.tsx`.
 
 ```bash
 cd marketing/reels-kortta
+node scripts/build-screens.cjs /caminho/com/tailwindcss-cli
 python3 scripts/music.py music.wav
 node scripts/render.cjs noaudio.mp4
 ffmpeg -i noaudio.mp4 -i music.wav -c:v copy -c:a aac -b:a 192k -af loudnorm=I=-14:TP=-1.5 -shortest -movflags +faststart kortta-reels.mp4

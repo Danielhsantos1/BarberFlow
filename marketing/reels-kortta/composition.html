@@ -71,7 +71,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 
 #laptop { left:72px; top:780px; width:936px; }
 #lapScreen { position:relative; width:936px; height:480px; background:#070b12; border-radius:24px 24px 6px 6px; border:2px solid #2b3d5c; padding:18px; box-shadow: 0 50px 100px #000b; }
-#lapScreen .img { width:896px; height:440px; background:url(assets/visao-geral.png) top left / 896px auto no-repeat; border-radius:6px; }
+#lapScreen .img { width:896px; height:440px; background:url(assets/demo-dashboard.png) top left / 896px auto no-repeat; border-radius:6px; }
 #lapOn { position:absolute; inset:18px; border-radius:6px; background:#fff; }
 #lapBase { margin:0 auto; width:1036px; margin-left:-50px; height:34px; background: linear-gradient(#3b4a63, #1a2333); border-radius: 0 0 26px 26px; box-shadow: 0 30px 50px #000a; position:relative; }
 #lapBase::after { content:''; position:absolute; left:50%; top:0; transform:translateX(-50%); width:180px; height:12px; background:#121a28; border-radius:0 0 12px 12px; }
@@ -92,6 +92,12 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 .cursor { position:absolute; width:56px; height:56px; z-index:20; filter: drop-shadow(0 8px 10px #0009); }
 .ripple { position:absolute; border-radius:50%; border:5px solid #fff; opacity:0; z-index:19; }
 
+.kpi { position:absolute; left:0; top:0; width:306px; height:150.5px; transform-origin:0 0; background:#fff; border:1px solid #d9e2f0; border-radius:15px; padding:20px; color:#1f1f1f; }
+.kpi .row { display:flex; align-items:center; justify-content:space-between; }
+.kpi .lab { font-size:12px; color:#5e6e85; }
+.kpi .ic { width:36px; height:36px; border-radius:8px; background:#e4ebf5; color:#a91e29; display:grid; place-items:center; }
+.kpi .val { font-family:'Space Grotesk'; font-weight:600; letter-spacing:-0.045em; font-size:24px; line-height:32px; margin-top:20px; font-variant-numeric: tabular-nums; }
+.kpi .det { margin-top:4px; font-size:11px; color:#7d8da4; }
 /* ---------- Scene 6 ---------- */
 #s6phone { left:250px; top:300px; width:580px; height:1180px; border-radius:76px; background:#05090f; border:3px solid #2e4163; padding:24px; box-shadow: 0 80px 160px #000d; transform-style: preserve-3d; }
 #s6screen { position:relative; width:100%; height:100%; border-radius:54px; overflow:hidden; background:#0e1a2b; }
@@ -186,7 +192,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
     <div class="abs title" style="left:80px; top:250px; width:920px;" id="s3t"><div>Tudo sob controle.</div><div style="color:#e63946">Em um só lugar.</div></div>
     <div class="win" id="s3win" style="top:470px;">
       <div class="chrome"><span></span><span></span><span></span><div class="url">Kortta · Visão geral</div></div>
-      <div class="shot" style="height:468px;"><img src="assets/visao-geral.png" style="width:960px"><div class="hl" id="s3hl"></div></div>
+      <div class="shot" style="height:468px;"><img src="assets/demo-dashboard.png" style="width:960px"><div class="hl" id="s3hl"></div></div>
     </div>
     <div id="s3cards"></div>
   </div>
@@ -197,7 +203,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
     <div class="abs title" style="left:80px; top:250px; width:940px; font-size:74px;" id="s4t"><div>Agenda organizada.</div><div style="color:#e63946">Atendimento mais eficiente.</div></div>
     <div class="win" id="s4win" style="top:470px;">
       <div class="chrome"><span></span><span></span><span></span><div class="url">Kortta · Agenda</div></div>
-      <div class="shot" style="height:436px;"><img src="assets/agenda.png" style="width:960px"><div class="hl" id="s4hl"></div></div>
+      <div class="shot" style="height:468px;"><img src="assets/demo-agenda.png" style="width:960px"><div class="hl" id="s4hl"></div></div>
     </div>
     <div id="s4crops"></div>
   </div>
@@ -208,7 +214,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
     <div class="abs title" style="left:80px; top:250px; width:920px;" id="s5t"><div>Crie motivos para seus</div><div style="color:#e63946">clientes voltarem.</div></div>
     <div class="win" id="s5win" style="top:470px;">
       <div class="chrome"><span></span><span></span><span></span><div class="url">Kortta · Marketing</div></div>
-      <div class="shot" style="height:361px;"><img src="assets/marketing.png" style="width:960px"><div class="hl" id="s5hl"></div></div>
+      <div class="shot" style="height:468px;"><img src="assets/demo-marketing.png" style="width:960px"><div class="hl" id="s5hl"></div></div>
     </div>
     <div id="s5crops"></div>
   </div>
@@ -322,22 +328,35 @@ function makeCrop(parent, src, natW, x, y, w, h, scale, radius) {
   return d;
 }
 // Visão geral KPI cards (natural px of the 1872x912 capture)
-const kpi = [[349, 253], [724, 253], [1100, 253], [1475, 253]];
-const KW = 356, KH = 188, KS = 1.12;
-const s3cards = kpi.map(([x, y]) => makeCrop('s3cards', 'assets/visao-geral.png', 1872, x, y, KW, KH, KS, 18));
-const gridPos = [[110, 1030], [110 + KW * KS + 30, 1030], [110, 1030 + KH * KS + 30], [110 + KW * KS + 30, 1030 + KH * KS + 30]];
+const kpi = [[288, 211], [610, 211], [932, 211], [1254, 211]];
+const KW = 306, KH = 150.5, KS = 1.35;
+const KPI_DATA = [
+  { label: 'Agendamentos hoje', value: 12, money: false, det: 'na agenda', icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>' },
+  { label: 'Receita do mês', value: 8450, money: true, det: 'faturamento acumulado', icon: '<circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8M12 18V6"/>' },
+  { label: 'Clientes ativos', value: 186, money: false, det: 'na sua base', icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>' },
+  { label: 'Serviços', value: 10, money: false, det: 'no catálogo', icon: '<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>' },
+];
+const fmtKpi = (d, v) => d.money ? v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : String(Math.round(v));
+const s3cards = KPI_DATA.map(d => {
+  const c = document.createElement('div'); c.className = 'crop';
+  c.style.width = (KW * KS) + 'px'; c.style.height = (KH * KS) + 'px'; c.style.borderRadius = (15 * KS) + 'px';
+  c.innerHTML = `<div class="kpi" style="transform:scale(${KS})"><div class="row"><span class="lab">${d.label}</span><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d.icon}</svg></span></div><div class="val">${fmtKpi(d, 0)}</div><div class="det">${d.det}</div></div><div class="ring"></div>`;
+  $('s3cards').appendChild(c); return c;
+});
+const GX = (1080 - (KW * KS * 2 + 30)) / 2;
+const gridPos = [[GX, 1010], [GX + KW * KS + 30, 1010], [GX, 1010 + KH * KS + 26], [GX + KW * KS + 30, 1010 + KH * KS + 26]];
 s3cards.forEach((c, i) => { c.style.left = gridPos[i][0] + 'px'; c.style.top = gridPos[i][1] + 'px'; });
 
-// Agenda crops (1867x847)
-const s4date = makeCrop('s4crops', 'assets/agenda.png', 1867, 334, 242, 410, 72, 2.1, 14);
-s4date.style.left = (540 - 410 * 2.1 / 2) + 'px'; s4date.style.top = '1000px'; s4date.style.backgroundColor = '#eef2f9';
-const s4btn = makeCrop('s4crops', 'assets/agenda.png', 1867, 1584, 163, 264, 61, 2.3, 10);
-s4btn.style.left = (540 - 264 * 2.3 / 2) + 'px'; s4btn.style.top = '1220px';
-// Marketing crops (1562x587)
-const s5head = makeCrop('s5crops', 'assets/marketing.png', 1562, 262, 86, 330, 106, 2.25, 14);
-s5head.style.left = (540 - 330 * 2.25 / 2) + 'px'; s5head.style.top = '920px'; s5head.style.backgroundColor = '#eef2f9';
-const s5btn = makeCrop('s5crops', 'assets/marketing.png', 1562, 1358, 134, 188, 50, 2.7, 10);
-s5btn.style.left = (540 - 188 * 2.7 / 2) + 'px'; s5btn.style.top = '1215px';
+// Agenda crops (tela de demonstração 1600 px lógicos)
+const s4date = makeCrop('s4crops', 'assets/demo-agenda.png', 1600, 289, 349, 1075, 341, 0.874, 15);
+s4date.style.left = '70px'; s4date.style.top = '995px'; s4date.style.backgroundColor = '#fff';
+const s4btn = makeCrop('s4crops', 'assets/demo-agenda.png', 1600, 1353.8, 139, 206.3, 44, 2.0, 9);
+s4btn.style.left = (540 - 206.3) + 'px'; s4btn.style.top = '1335px';
+// Marketing crops
+const s5head = makeCrop('s5crops', 'assets/demo-marketing.png', 1600, 289, 257, 1000, 324, 0.94, 15);
+s5head.style.left = '70px'; s5head.style.top = '995px'; s5head.style.backgroundColor = '#fff';
+const s5btn = makeCrop('s5crops', 'assets/demo-marketing.png', 1600, 1380.1, 139, 179.9, 44, 2.3, 9);
+s5btn.style.left = (540 - 179.9 * 2.3 / 2) + 'px'; s5btn.style.top = '1335px';
 
 function makeCursor(parent) {
   const c = document.createElement('div'); c.className = 'cursor';
@@ -481,7 +500,7 @@ function render(t) {
       const push = p(t, 10.0, 16.2);
       set('s3win', { o: wk, y: (1 - wk) * 120, s: lerp(.86, 1, wk) * (1 + push * .02), rx: lerp(22, 0, wk) + 3, persp: 1800 });
       // card pop-outs: fly from the window position to the grid
-      const winScale = 960 / 1872, winTop = 470 + 46;
+      const winScale = 960 / 1600, winTop = 470 + 46;
       s3cards.forEach((c, i) => {
         const a = 11.6 + i * .28;
         const k = eOut5(p(t, a, a + .7));
@@ -496,6 +515,9 @@ function render(t) {
         c.querySelector('.ring').style.opacity = h;
         c.style.zIndex = h > 0 ? 5 : 1;
         if (k >= 1) { set(c, { o: 1, s: 1 + h * .05, y: -h * 10 }); c.style.transformOrigin = '50% 50%'; }
+        // contagem crescente (só efeito visual)
+        const cnt = eOut(p(t, a + .3, a + 1.5));
+        c.querySelector('.val').textContent = fmtKpi(KPI_DATA[i], KPI_DATA[i].value * cnt);
       });
       // highlight inside window follows the spotlight
       const hl = $('s3hl');
@@ -514,31 +536,31 @@ function render(t) {
       rise($('s4e'), t, 16.2); rise($('s4t'), t, 16.3, .7, 80);
       const wk = eOut5(p(t, 16.0, 16.9));
       set('s4win', { o: wk, y: (1 - wk) * 120, s: lerp(.86, 1, wk) * (1 + p(t, 16, 22.2) * .02), rx: lerp(22, 0, wk) + 3, persp: 1800 });
-      const ws = 960 / 1867, wt = 470 + 46;
+      const ws = 960 / 1600, wt = 470 + 46;
       // date filter pops out
       const dk = eOut5(p(t, 17.3, 18.0));
       s4date.style.transformOrigin = '0 0';
-      const dLeft = 540 - 410 * 2.1 / 2;
-      set(s4date, { o: p(t, 17.3, 17.42), x: lerp(60 + 334 * ws - dLeft, 0, dk), y: lerp(wt + 242 * ws - 1000, 0, dk), s: lerp(ws / 2.1, 1, dk) });
+      const dLeft = 70;
+      set(s4date, { o: p(t, 17.3, 17.42), x: lerp(60 + 289 * ws - dLeft, 0, dk), y: lerp(wt + 349 * ws - 995, 0, dk), s: lerp(ws / 0.874, 1, dk) });
       // button pops out
       const bk = eOut5(p(t, 18.0, 18.7));
-      const bLeft = 540 - 264 * 2.3 / 2;
+      const bLeft = 540 - 206.3;
       s4btn.style.transformOrigin = '0 0';
       const press = p(t, 19.55, 19.65) * (1 - p(t, 19.7, 19.9));
-      if (bk < 1) set(s4btn, { o: p(t, 18.0, 18.12), x: lerp(60 + 1584 * ws - bLeft, 0, bk), y: lerp(wt + 163 * ws - 1220, 0, bk), s: lerp(ws / 2.3, 1, bk) });
+      if (bk < 1) set(s4btn, { o: p(t, 18.0, 18.12), x: lerp(60 + 1353.8 * ws - bLeft, 0, bk), y: lerp(wt + 139 * ws - 1335, 0, bk), s: lerp(ws / 2.0, 1, bk) });
       else { s4btn.style.transformOrigin = '50% 50%'; set(s4btn, { o: 1, s: 1 - press * .06 }); }
       s4btn.querySelector('.ring').style.opacity = p(t, 19.6, 19.8) * (1 - p(t, 21.2, 21.6));
       // highlight in window
       const hl = $('s4hl'); const which = t < 18 ? 0 : 1;
-      const R = which ? [1584, 163, 264, 61] : [334, 242, 410, 72];
+      const R = which ? [1353.8, 139, 206.3, 44] : [289, 349, 1075, 341];
       hl.style.left = (R[0] * ws - 4) + 'px'; hl.style.top = (R[1] * ws - 4) + 'px'; hl.style.width = (R[2] * ws + 8) + 'px'; hl.style.height = (R[3] * ws + 8) + 'px';
       hl.style.opacity = p(t, 17.0, 17.3) * (1 - p(t, 21.3, 21.6));
       // cursor
       const ck = eIO(p(t, 18.7, 19.5));
-      const cx = lerp(900, 540 + 120, ck), cy = lerp(1520, 1220 + 64, ck);
+      const cx = lerp(900, 540 + 110, ck), cy = lerp(1520, 1335 + 50, ck);
       set(cur4, { o: p(t, 18.6, 18.8) * (1 - p(t, 21.0, 21.3)), x: cx, y: cy + press * 6, s: 1 - press * .15 });
       const rk = p(t, 19.6, 20.3);
-      rip4.style.left = (540 + 120 - 20) + 'px'; rip4.style.top = (1220 + 64 - 20) + 'px';
+      rip4.style.left = (540 + 110 - 20) + 'px'; rip4.style.top = (1335 + 50 - 20) + 'px';
       rip4.style.width = rip4.style.height = '40px';
       set(rip4, { o: rk > 0 && rk < 1 ? (1 - rk) : 0, s: 1 + rk * 5 });
     }
@@ -551,23 +573,23 @@ function render(t) {
       rise($('s5e'), t, 22.2); rise($('s5t'), t, 22.3, .7, 80);
       const wk = eOut5(p(t, 22.0, 22.9));
       set('s5win', { o: wk, y: (1 - wk) * 120, s: lerp(.86, 1, wk) * (1 + p(t, 22, 27.2) * .02), rx: lerp(22, 0, wk) + 3, persp: 1800 });
-      const ws = 960 / 1562, wt = 470 + 46;
+      const ws = 960 / 1600, wt = 470 + 46;
       const hk = eOut5(p(t, 23.1, 23.8));
-      const hLeft = 540 - 330 * 2.25 / 2;
+      const hLeft = 70;
       s5head.style.transformOrigin = '0 0';
-      set(s5head, { o: p(t, 23.1, 23.22), x: lerp(60 + 262 * ws - hLeft, 0, hk), y: lerp(wt + 86 * ws - 920, 0, hk), s: lerp(ws / 2.25, 1, hk) });
+      set(s5head, { o: p(t, 23.1, 23.22), x: lerp(60 + 289 * ws - hLeft, 0, hk), y: lerp(wt + 257 * ws - 995, 0, hk), s: lerp(ws / 0.94, 1, hk) });
       const bk = eOut5(p(t, 23.7, 24.4));
-      const bLeft = 540 - 188 * 2.7 / 2;
+      const bLeft = 540 - 179.9 * 2.3 / 2;
       const press = p(t, 25.15, 25.25) * (1 - p(t, 25.3, 25.5));
-      if (bk < 1) { s5btn.style.transformOrigin = '0 0'; set(s5btn, { o: p(t, 23.7, 23.82), x: lerp(60 + 1358 * ws - bLeft, 0, bk), y: lerp(wt + 134 * ws - 1215, 0, bk), s: lerp(ws / 2.7, 1, bk) }); }
+      if (bk < 1) { s5btn.style.transformOrigin = '0 0'; set(s5btn, { o: p(t, 23.7, 23.82), x: lerp(60 + 1380.1 * ws - bLeft, 0, bk), y: lerp(wt + 139 * ws - 1335, 0, bk), s: lerp(ws / 2.3, 1, bk) }); }
       else { s5btn.style.transformOrigin = '50% 50%'; set(s5btn, { o: 1, s: 1 - press * .06 }); }
       s5btn.querySelector('.ring').style.opacity = p(t, 25.2, 25.4) * (1 - p(t, 26.5, 26.9));
       const hl = $('s5hl'); const which = t < 23.7 ? 0 : 1;
-      const R = which ? [1358, 134, 188, 50] : [262, 86, 330, 106];
+      const R = which ? [1380.1, 139, 179.9, 44] : [289, 257, 1000, 324];
       hl.style.left = (R[0] * ws - 4) + 'px'; hl.style.top = (R[1] * ws - 4) + 'px'; hl.style.width = (R[2] * ws + 8) + 'px'; hl.style.height = (R[3] * ws + 8) + 'px';
       hl.style.opacity = p(t, 22.9, 23.1) * (1 - p(t, 26.6, 26.9));
       const ck = eIO(p(t, 24.4, 25.1));
-      const tx = 540 + 110, ty = 1215 + 60;
+      const tx = 540 + 110, ty = 1335 + 55;
       set(cur5, { o: p(t, 24.3, 24.5) * (1 - p(t, 26.5, 26.8)), x: lerp(220, tx, ck), y: lerp(1520, ty, ck) + press * 6, s: 1 - press * .15 });
       const rk = p(t, 25.2, 25.9);
       rip5.style.left = (tx - 20) + 'px'; rip5.style.top = (ty - 20) + 'px'; rip5.style.width = rip5.style.height = '40px';
