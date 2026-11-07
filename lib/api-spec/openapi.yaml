@@ -917,7 +917,17 @@ components:
           items: { $ref: "#/components/schemas/Service" }
         barbers:
           type: array
-          items: { $ref: "#/components/schemas/Barber" }
+          items: { $ref: "#/components/schemas/PublicBarber" }
+    PublicBarber:
+      description: Barber data safe to show on the public booking page (no phone or commission).
+      type: object
+      required: [id, name, specialties]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        specialties:
+          type: array
+          items: { type: string }
     AvailabilitySlot:
       type: object
       required: [startTime, barberId, barberName]

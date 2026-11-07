@@ -24,7 +24,6 @@ import {
   localDateString,
   timeToMinutes,
   toAppointment,
-  toBarber,
   toDateString,
   toService,
 } from "./shared";
@@ -206,7 +205,8 @@ router.get(
         whatsapp: salon.whatsapp,
         logoUrl: salon.logoUrl,
         services: services.map(toService),
-        barbers: barbers.map(toBarber),
+        // Public page: never expose barbers' phone numbers or commission.
+        barbers: barbers.map(({ id, name, specialties }) => ({ id, name, specialties })),
       }),
     );
   },

@@ -34,6 +34,7 @@ export * from './inventoryUpdate';
 export * from './listAppointmentsParams';
 export * from './listAppointmentsStatus';
 export * from './listClientsParams';
+export * from './publicBarber';
 export * from './publicBookingInput';
 export * from './publicSalon';
 export * from './revenuePoint';
