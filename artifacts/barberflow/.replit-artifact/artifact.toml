@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "BarberFlow"
+description = "SaaS de gestão para barbearias com agendamento online, clientes, equipe, serviços, caixa, estoque e fidelização em um só lugar."
+version = "1.0.0"
+id = "artifacts/barberflow"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23051
+
+[services.development]
+run = "pnpm --filter @workspace/barberflow run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/barberflow", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/barberflow/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23051"
+BASE_PATH = "/"
