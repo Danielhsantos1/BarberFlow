@@ -124,7 +124,7 @@ router.patch("/clients/:clientId", async (req, res): Promise<void> => {
     )
     .returning();
   if (!client) {
-    res.status(404).json({ error: "Client not found" });
+    res.status(404).json({ error: "Cliente não encontrado" });
     return;
   }
   res.json(UpdateClientResponse.parse(toClient(client)));
@@ -146,7 +146,7 @@ router.delete("/clients/:clientId", async (req, res): Promise<void> => {
     )
     .returning({ id: clientsTable.id });
   if (!client) {
-    res.status(404).json({ error: "Client not found" });
+    res.status(404).json({ error: "Cliente não encontrado" });
     return;
   }
   res.sendStatus(204);
@@ -226,7 +226,7 @@ router.patch(
       )
       .returning();
     if (!barber) {
-      res.status(404).json({ error: "Barber not found" });
+      res.status(404).json({ error: "Profissional não encontrado" });
       return;
     }
     res.json(UpdateBarberResponse.parse(toBarber(barber)));
@@ -253,7 +253,7 @@ router.delete(
       )
       .returning({ id: barbersTable.id });
     if (!barber) {
-      res.status(404).json({ error: "Barber not found" });
+      res.status(404).json({ error: "Profissional não encontrado" });
       return;
     }
     res.sendStatus(204);
@@ -333,7 +333,7 @@ router.patch(
       )
       .returning();
     if (!service) {
-      res.status(404).json({ error: "Service not found" });
+      res.status(404).json({ error: "Serviço não encontrado" });
       return;
     }
     res.json(UpdateServiceResponse.parse(toService(service)));
@@ -360,7 +360,7 @@ router.delete(
       )
       .returning({ id: servicesTable.id });
     if (!service) {
-      res.status(404).json({ error: "Service not found" });
+      res.status(404).json({ error: "Serviço não encontrado" });
       return;
     }
     res.sendStatus(204);

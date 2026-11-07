@@ -24,7 +24,6 @@ import {
   localDateString,
   timeToMinutes,
   toAppointment,
-  toBarber,
   toDateString,
   toService,
 } from "./shared";
@@ -174,7 +173,7 @@ router.get(
       .where(eq(salonsTable.slug, params.data.slug))
       .limit(1);
     if (!salon) {
-      res.status(404).json({ error: "Salon not found" });
+      res.status(404).json({ error: "Barbearia não encontrada" });
       return;
     }
     const [services, barbers] = await Promise.all([
@@ -206,7 +205,8 @@ router.get(
         whatsapp: salon.whatsapp,
         logoUrl: salon.logoUrl,
         services: services.map(toService),
-        barbers: barbers.map(toBarber),
+        // Public page: never expose barbers' phone numbers or commission.
+        barbers: barbers.map(({ id, name, specialties }) => ({ id, name, specialties })),
       }),
     );
   },
@@ -233,7 +233,7 @@ router.post(
       .where(eq(salonsTable.slug, params.data.slug))
       .limit(1);
     if (!salon) {
-      res.status(404).json({ error: "Salon not found" });
+      res.status(404).json({ error: "Barbearia não encontrada" });
       return;
     }
     const availability = await getAvailability(
@@ -243,7 +243,7 @@ router.post(
       parsed.data.barberId ?? undefined,
     );
     if (!availability) {
-      res.status(404).json({ error: "Service not found" });
+      res.status(404).json({ error: "Serviço não encontrado" });
       return;
     }
     res.json(CheckBookingAvailabilityResponse.parse(availability.slots));
@@ -271,7 +271,7 @@ router.post(
       .where(eq(salonsTable.slug, params.data.slug))
       .limit(1);
     if (!salon) {
-      res.status(404).json({ error: "Salon not found" });
+      res.status(404).json({ error: "Barbearia não encontrada" });
       return;
     }
 
@@ -288,7 +288,7 @@ router.post(
         item.startTime === input.startTime && item.barberId === input.barberId,
     );
     if (!availability || !slot) {
-      res.status(409).json({ error: "Time slot is no longer available" });
+      res.status(409).json({ error: "Esse horário acabou de ser ocupado. Escolha outro" });
       return;
     }
 
@@ -303,7 +303,7 @@ router.post(
       )
       .limit(1);
     if (!barber) {
-      res.status(404).json({ error: "Barber not found" });
+      res.status(404).json({ error: "Profissional não encontrado" });
       return;
     }
 

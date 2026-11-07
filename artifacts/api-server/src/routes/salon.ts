@@ -65,13 +65,13 @@ router.get(
   async (req, res): Promise<void> => {
     const userId = req.clerkUserId;
     if (!userId) {
-      res.status(401).json({ error: "Authentication required" });
+      res.status(401).json({ error: "Faça login para continuar" });
       return;
     }
 
     const membership = await findSalonMembership(userId);
     if (!membership) {
-      res.status(404).json({ error: "Salon onboarding is required" });
+      res.status(404).json({ error: "Cadastre sua barbearia para continuar" });
       return;
     }
 
@@ -81,7 +81,7 @@ router.get(
       .where(eq(salonsTable.id, membership.salonId))
       .limit(1);
     if (!salon) {
-      res.status(404).json({ error: "Salon not found" });
+      res.status(404).json({ error: "Barbearia não encontrada" });
       return;
     }
 
@@ -104,13 +104,13 @@ router.post(
       return;
     }
     if (!req.clerkUserId) {
-      res.status(401).json({ error: "Authentication required" });
+      res.status(401).json({ error: "Faça login para continuar" });
       return;
     }
 
     const existing = await findSalonMembership(req.clerkUserId);
     if (existing) {
-      res.status(409).json({ error: "User already belongs to a salon" });
+      res.status(409).json({ error: "Sua conta já está vinculada a uma barbearia" });
       return;
     }
 
@@ -160,7 +160,7 @@ router.patch(
       return;
     }
     if (!req.salonId) {
-      res.status(404).json({ error: "Salon not found" });
+      res.status(404).json({ error: "Barbearia não encontrada" });
       return;
     }
 
@@ -182,7 +182,7 @@ router.patch(
       .where(and(eq(salonsTable.id, req.salonId)))
       .returning();
     if (!salon) {
-      res.status(404).json({ error: "Salon not found" });
+      res.status(404).json({ error: "Barbearia não encontrada" });
       return;
     }
 

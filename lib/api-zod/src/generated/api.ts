@@ -748,12 +748,8 @@ export const GetPublicSalonResponse = zod.object({
   "barbers": zod.array(zod.object({
   "id": zod.string().uuid(),
   "name": zod.string(),
-  "phone": zod.string().nullable(),
-  "specialties": zod.array(zod.string()),
-  "commissionPct": zod.number(),
-  "active": zod.boolean(),
-  "workingHours": zod.record(zod.string(), zod.unknown()).optional()
-}))
+  "specialties": zod.array(zod.string())
+}).describe('Barber data safe to show on the public booking page (no phone or commission).'))
 })
 
 

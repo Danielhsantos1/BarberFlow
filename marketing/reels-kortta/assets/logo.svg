@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="48" viewBox="0 0 160 48" fill="none">
+  <defs>
+    <pattern id="pole" width="17" height="17" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="17" height="17" fill="#ffffff"/>
+      <rect width="4.25" height="17" fill="#e63946"/>
+      <rect x="8.5" width="4.25" height="17" fill="#1d4ed8"/>
+    </pattern>
+    <clipPath id="r"><rect x="2" y="4" width="40" height="40" rx="11"/></clipPath>
+  </defs>
+  <rect x="2" y="4" width="40" height="40" rx="11" fill="url(#pole)" clip-path="url(#r)"/>
+  <rect x="3" y="5" width="38" height="38" rx="10" stroke="#ffffff" stroke-width="2"/>
+  <text x="52" y="33" fill="#ffffff" font-family="Space Grotesk, DM Sans, sans-serif" font-size="26" font-weight="700" letter-spacing="-1.2">kortta</text>
+</svg>

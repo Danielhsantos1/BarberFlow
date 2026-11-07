@@ -401,6 +401,15 @@ export interface CampaignInput {
   endsAt?: string | null;
 }
 
+/**
+ * Barber data safe to show on the public booking page (no phone or commission).
+ */
+export interface PublicBarber {
+  id: string;
+  name: string;
+  specialties: string[];
+}
+
 export interface PublicSalon {
   name: string;
   slug: string;
@@ -410,7 +419,7 @@ export interface PublicSalon {
   /** @nullable */
   logoUrl?: string | null;
   services: Service[];
-  barbers: Barber[];
+  barbers: PublicBarber[];
 }
 
 export interface AvailabilitySlot {

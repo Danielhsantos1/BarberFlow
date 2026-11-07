@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Kortta — Reels</title>
+<style>
+@font-face { font-family: 'Space Grotesk'; font-weight: 500; src: url(fonts/SpaceGrotesk-500.woff); }
+@font-face { font-family: 'Space Grotesk'; font-weight: 600; src: url(fonts/SpaceGrotesk-600.woff); }
+@font-face { font-family: 'Space Grotesk'; font-weight: 700; src: url(fonts/SpaceGrotesk-700.woff); }
+@font-face { font-family: 'DM Sans'; font-weight: 400; src: url(fonts/DMSans-400.woff); }
+@font-face { font-family: 'DM Sans'; font-weight: 500; src: url(fonts/DMSans-500.woff); }
+@font-face { font-family: 'DM Sans'; font-weight: 700; src: url(fonts/DMSans-700.woff); }
+
+:root { --navy:#0e1a2b; --navy2:#15243b; --line:#20375a; --red:#e63946; --red2:#ea414f; --ink:#e5ebf5; --muted:#9da9bc; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); font-family: 'DM Sans', sans-serif; color: var(--ink); }
+.abs { position: absolute; }
+.display { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.045em; }
+.scene { position: absolute; inset: 0; will-change: opacity, transform; }
+
+/* background */
+#bg { position:absolute; inset:-200px; background: radial-gradient(1200px 900px at 50% 40%, #142742 0%, #0e1a2b 55%, #0a1322 100%); }
+.glow { position:absolute; border-radius:50%; filter: blur(90px); }
+#glowR { width:700px; height:700px; background:#e6394640; }
+#glowB { width:800px; height:800px; background:#1d4ed83a; }
+#grid { position:absolute; inset:0; opacity:.22;
+  background-image: linear-gradient(#20375a55 1px, transparent 1px), linear-gradient(90deg, #20375a55 1px, transparent 1px);
+  background-size: 90px 90px; mask-image: radial-gradient(700px 900px at 50% 45%, #000 20%, transparent 75%); }
+#vignette { position:absolute; inset:0; pointer-events:none; background: radial-gradient(1000px 1400px at 50% 50%, transparent 55%, #00000099 100%); z-index: 50; }
+#flash { position:absolute; inset:0; background:#fff; opacity:0; z-index: 60; }
+#fadeout { position:absolute; inset:0; background:#000; opacity:0; z-index: 70; }
+
+/* ---------- Scene 1: o problema ---------- */
+.h1 { font-family:'Space Grotesk'; font-weight:700; letter-spacing:-0.045em; line-height:.98; }
+.word { display:inline-block; will-change: transform, opacity; }
+#s1h1 { left:80px; top:230px; width:940px; font-size:82px; color:#fff; }
+#s1h2 { left:80px; top:430px; width:940px; font-size:82px; color:#fff; }
+#s1h2 .accent { color: var(--red); }
+
+#paper { left:70px; top:680px; width:500px; height:640px; background:#f3eee3; border-radius:10px; box-shadow: 0 40px 80px #0009; color:#2b2f38; padding:38px 34px; transform-origin: 50% 50%;
+  background-image: repeating-linear-gradient(#f3eee3 0 61px, #c9d3e3 61px 63px); background-position: 0 30px; }
+#paper .ptitle { font-family:'Space Grotesk'; font-weight:700; font-size:32px; color:#1b2638; margin-bottom:20px; letter-spacing:-.02em; }
+#paper .row { position:relative; height:63px; font-size:30px; line-height:63px; font-style:italic; color:#33405a; white-space:nowrap; }
+#paper .row b { font-style:normal; color:#c1121f; margin-right:14px; font-weight:700; }
+#paper .strike { position:absolute; left:-6px; top:31px; height:4px; background:#c1121f; border-radius:3px; width:0; }
+#paper .circle { position:absolute; border:4px solid #c1121f; border-radius:50%; opacity:0; }
+#sticky { left:330px; top:1150px; width:270px; height:230px; background:#ffd84d; box-shadow: 0 25px 40px #0008; padding:28px 24px; font-size:30px; font-style:italic; color:#4a3b00; line-height:1.25; font-weight:500; }
+
+#phone { left:520px; top:610px; width:430px; height:830px; border-radius:62px; background:#05090f; border:3px solid #2a3a55; box-shadow: 0 60px 120px #000c, inset 0 0 0 10px #0b1220; padding:22px; }
+#phoneScreen { position:relative; width:100%; height:100%; border-radius:44px; overflow:hidden; background: linear-gradient(#0f1b2d, #0a1220); }
+#phoneHead { position:absolute; left:0; right:0; top:0; height:120px; padding:52px 26px 0; border-bottom:1px solid #1c2c45; font-weight:700; font-size:24px; color:#dfe7f3; background:#0f1b2d; z-index:3; }
+#phoneHead small { display:block; font-weight:400; font-size:17px; color:#7f8fa8; margin-top:4px; }
+#notch { position:absolute; left:50%; top:12px; width:120px; height:30px; background:#05090f; border-radius:20px; transform:translateX(-50%); z-index:4; }
+.bubble { position:absolute; left:20px; max-width:320px; padding:16px 20px; border-radius:22px 22px 22px 6px; background:#1d2f4b; color:#e8eef8; font-size:22px; line-height:1.3; box-shadow: 0 8px 20px #0006; }
+.bubble i { display:block; font-style:normal; font-size:15px; color:#8fa2c0; margin-bottom:4px; font-weight:700; }
+#badge { left:900px; top:590px; width:92px; height:92px; border-radius:50%; background:var(--red); color:#fff; font-weight:700; font-size:42px; display:grid; place-items:center; box-shadow: 0 0 0 8px #e6394633, 0 20px 40px #e639466b; font-family:'Space Grotesk'; }
+
+/* stripes transition */
+#stripes { position:absolute; left:-1400px; top:-1200px; width:2600px; height:4400px; z-index:40;
+  background: repeating-linear-gradient(90deg, #e63946 0 120px, #ffffff 120px 240px, #1d4ed8 240px 360px, #ffffff 360px 480px);
+  box-shadow: 0 0 120px #000a; }
+
+/* ---------- Scene 2: logo ---------- */
+.pole { position:absolute; border-radius:28%; overflow:hidden; background: repeating-linear-gradient(45deg, #ffffff 0 25%, #e63946 25% 50%, #ffffff 50% 75%, #1d4ed8 75% 100%); background-size: 120px 120px; box-shadow: inset 0 0 0 6px #fff, 0 30px 70px #e639464d; }
+#s2icon { left:430px; top:560px; width:220px; height:220px; }
+#s2word { left:0; width:1080px; top:800px; text-align:center; font-size:176px; font-weight:700; color:#fff; letter-spacing:-0.06em; }
+#s2tag { left:0; width:1080px; top:1010px; text-align:center; font-size:30px; letter-spacing:.42em; color:#8ea3c4; font-weight:500; }
+#s2meet { left:0; width:1080px; top:1150px; text-align:center; font-size:70px; font-weight:700; color:#fff; }
+#s2meet .accent { color: var(--red); }
+
+#laptop { left:72px; top:780px; width:936px; }
+#lapScreen { position:relative; width:936px; height:480px; background:#070b12; border-radius:24px 24px 6px 6px; border:2px solid #2b3d5c; padding:18px; box-shadow: 0 50px 100px #000b; }
+#lapScreen .img { width:896px; height:440px; background:url(assets/demo-dashboard.png) top left / 896px auto no-repeat; border-radius:6px; }
+#lapOn { position:absolute; inset:18px; border-radius:6px; background:#fff; }
+#lapBase { margin:0 auto; width:1036px; margin-left:-50px; height:34px; background: linear-gradient(#3b4a63, #1a2333); border-radius: 0 0 26px 26px; box-shadow: 0 30px 50px #000a; position:relative; }
+#lapBase::after { content:''; position:absolute; left:50%; top:0; transform:translateX(-50%); width:180px; height:12px; background:#121a28; border-radius:0 0 12px 12px; }
+
+/* ---------- Product scenes (3,4,5) ---------- */
+.eyebrow { font-size:26px; font-weight:700; letter-spacing:.32em; color: var(--red); }
+.title { font-family:'Space Grotesk'; font-weight:700; letter-spacing:-0.045em; font-size:84px; line-height:1.0; color:#fff; }
+.win { position:absolute; left:60px; width:960px; border-radius:22px; overflow:hidden; background:#eef2f9; box-shadow: 0 50px 110px #000c, 0 0 0 1px #2a3e60; transform-origin: 50% 0%; }
+.chrome { height:46px; background:#0b1424; display:flex; align-items:center; padding:0 20px; gap:9px; }
+.chrome span { width:13px; height:13px; border-radius:50%; background:#2a3a55; }
+.chrome span:nth-child(1){background:#e63946} .chrome span:nth-child(2){background:#f5b84a} .chrome span:nth-child(3){background:#4caf7a}
+.chrome .url { margin-left:22px; height:28px; flex:1; border-radius:14px; background:#16243a; color:#8ea0bb; font-size:16px; display:flex; align-items:center; padding-left:16px; }
+.shot { position:relative; overflow:hidden; }
+.shot img { display:block; transform-origin: 0 0; }
+.hl { position:absolute; border:4px solid var(--red); border-radius:14px; box-shadow: 0 0 0 6px #e6394630, 0 0 40px #e6394680; opacity:0; }
+.crop { position:absolute; background-repeat:no-repeat; box-shadow: 0 30px 70px #000b, 0 0 0 1px #ffffff22; will-change: transform, opacity; }
+.ring { position:absolute; border-radius:inherit; inset:-8px; border:5px solid var(--red); box-shadow: 0 0 40px #e63946aa; opacity:0; }
+.cursor { position:absolute; width:56px; height:56px; z-index:20; filter: drop-shadow(0 8px 10px #0009); }
+.ripple { position:absolute; border-radius:50%; border:5px solid #fff; opacity:0; z-index:19; }
+
+.kpi { position:absolute; left:0; top:0; width:306px; height:150.5px; transform-origin:0 0; background:#fff; border:1px solid #d9e2f0; border-radius:15px; padding:20px; color:#1f1f1f; }
+.kpi .row { display:flex; align-items:center; justify-content:space-between; }
+.kpi .lab { font-size:12px; color:#5e6e85; }
+.kpi .ic { width:36px; height:36px; border-radius:8px; background:#e4ebf5; color:#a91e29; display:grid; place-items:center; }
+.kpi .val { font-family:'Space Grotesk'; font-weight:600; letter-spacing:-0.045em; font-size:24px; line-height:32px; margin-top:20px; font-variant-numeric: tabular-nums; }
+.kpi .det { margin-top:4px; font-size:11px; color:#7d8da4; }
+/* ---------- Scene 6 ---------- */
+#s6phone { left:250px; top:300px; width:580px; height:1180px; border-radius:76px; background:#05090f; border:3px solid #2e4163; padding:24px; box-shadow: 0 80px 160px #000d; transform-style: preserve-3d; }
+#s6screen { position:relative; width:100%; height:100%; border-radius:54px; overflow:hidden; background:#0e1a2b; }
+#s6notch { position:absolute; left:50%; top:14px; width:130px; height:34px; background:#05090f; border-radius:20px; transform:translateX(-50%); z-index:5; }
+#land { position:absolute; left:0; top:0; width:528px; padding:0 30px; }
+.lhead { display:flex; align-items:center; justify-content:space-between; padding-top:74px; }
+.brand { display:flex; align-items:center; gap:12px; }
+.brand .pole { position:relative; width:46px; height:46px; box-shadow: inset 0 0 0 3px #fff; background-size: 34px 34px; }
+.brand b { font-family:'Space Grotesk'; font-weight:700; font-size:30px; letter-spacing:-0.05em; color:#fff; }
+.lbtn { background:var(--red); color:#fff; font-weight:700; font-size:16px; padding:11px 16px; border-radius:12px; }
+.leyebrow { margin-top:70px; display:flex; align-items:center; gap:12px; font-size:13px; letter-spacing:.25em; text-transform:uppercase; color:var(--red); }
+.leyebrow::before { content:''; width:34px; height:2px; background:var(--red); }
+.lh1 { margin-top:24px; font-family:'Space Grotesk'; font-weight:600; letter-spacing:-0.045em; font-size:68px; line-height:.94; color:#e5ebf5; }
+.lh1 span { color:var(--red); }
+.lp { margin-top:26px; font-size:20px; line-height:1.55; color:#9da9bc; }
+.lcta { margin-top:30px; display:inline-block; background:var(--red); color:#fff; font-weight:700; font-size:20px; padding:17px 26px; border-radius:14px; }
+.lcard { margin-top:50px; border:1px solid #20375a; background:#15243b; border-radius:24px; padding:26px; transform: rotate(1.5deg); box-shadow: 0 30px 60px #0008; }
+.lcard .top { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #20375a; padding-bottom:18px; }
+.lcard .k { font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#6e809b; }
+.lcard .t { font-family:'Space Grotesk'; font-weight:600; font-size:24px; margin-top:6px; color:#e5ebf5; letter-spacing:-.03em; }
+.lcard .ic { width:48px; height:48px; border-radius:50%; background:var(--red); display:grid; place-items:center; }
+.lcard .money { display:flex; justify-content:space-between; align-items:center; margin-top:18px; }
+.lcard .money .v { font-family:'Space Grotesk'; font-weight:600; font-size:38px; color:#e5ebf5; letter-spacing:-.04em; }
+.lcard .money .v span { color:var(--red); }
+.lcard .pill { background:#26416b; color:#a7d0ad; border-radius:20px; padding:6px 12px; font-size:14px; }
+.lrow { display:flex; align-items:center; gap:14px; border:1px solid #1f3557; background:#172841; border-radius:16px; padding:14px; margin-top:12px; }
+.lrow.on { border-color:#e6394655; background:#e6394611; }
+.lrow .h { width:58px; font-family:monospace; font-size:15px; color:var(--red); }
+.lrow .av { width:44px; height:44px; border-radius:50%; background:#1f3658; color:#f499a1; font-weight:700; font-size:14px; display:grid; place-items:center; }
+.lrow .n { font-size:16px; font-weight:700; color:#e5ebf5; } .lrow .s { font-size:13px; color:#72839d; margin-top:3px; }
+.lrow .st { margin-left:auto; background:#1c3151; color:#b2bccc; font-size:12px; border-radius:12px; padding:5px 10px; }
+
+#s6giant { left:-200px; top:640px; width:1480px; text-align:center; font-size:400px; font-weight:700; color:#ffffff07; letter-spacing:-0.07em; }
+#s6card { left:610px; top:1010px; width:420px; }
+#s6card .lcard { margin:0; }
+#s6icon { left:450px; top:470px; width:180px; height:180px; }
+#s6word { left:0; width:1080px; top:650px; text-align:center; font-size:170px; font-weight:700; color:#fff; letter-spacing:-0.06em; }
+#s6main { left:0; width:1080px; top:880px; text-align:center; font-size:80px; font-weight:700; color:#fff; letter-spacing:-0.045em; line-height:1; }
+#s6main span { color:var(--red); }
+#s6sub { left:120px; width:840px; top:1010px; text-align:center; font-size:38px; color:#a9b7cc; line-height:1.3; }
+#s6cta { left:90px; width:900px; top:1180px; height:128px; border-radius:64px; background: var(--red); color:#fff; display:flex; align-items:center; justify-content:center; gap:20px; font-weight:700; font-size:40px; letter-spacing:.02em; overflow:hidden; box-shadow: 0 30px 80px #e6394677; }
+#s6cta .shine { position:absolute; top:-40px; width:120px; height:220px; background: linear-gradient(90deg, transparent, #ffffff66, transparent); transform: rotate(20deg); }
+#s6arrow { left:510px; top:1340px; width:60px; height:60px; }
+
+/* captions */
+#cap { position:absolute; left:70px; width:940px; top:1488px; display:flex; justify-content:center; z-index:30; }
+#capBox { background: #070e1acc; border:1px solid #ffffff14; border-radius:22px; padding:18px 30px; font-size:40px; font-weight:700; line-height:1.28; text-align:center; color:#fff; box-shadow: 0 20px 40px #0007; }
+#capBox .w { display:inline-block; transition:none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg"></div>
+  <div id="glowR" class="glow"></div>
+  <div id="glowB" class="glow"></div>
+  <div id="grid"></div>
+
+  <!-- SCENE 1 -->
+  <div id="s1" class="scene">
+    <div id="paper" class="abs">
+      <div class="ptitle">Agenda — sábado</div>
+      <div class="row"><b>09h</b>Rafael — degradê<span class="strike" data-t="1.2"></span></div>
+      <div class="row"><b>10h</b>Caio ?? barba<span class="strike" data-t="1.9"></span></div>
+      <div class="row"><b>10h</b>Lucas (encaixe?)</div>
+      <div class="row"><b>11h</b>remarcar → 15h<span class="strike" data-t="2.6"></span></div>
+      <div class="row"><b>14h</b>Pedro / Felipe??</div>
+      <div class="row"><b>15h</b>— cancelou —<span class="strike" data-t="3.3"></span></div>
+      <div class="row"><b>17h</b>quem marcou?</div>
+      <div class="circle" id="circ1" style="left:10px; top:178px; width:470px; height:150px;"></div>
+    </div>
+    <div id="sticky" class="abs">Ligar pro fornecedor!!<br>Fechar o caixa<br>Pagar o Rafa</div>
+    <div id="phone" class="abs"><div id="phoneScreen"><div id="notch"></div><div id="phoneHead">Mensagens<small>12 conversas não lidas</small></div><div id="bubbles"></div></div></div>
+    <div id="badge" class="abs">0</div>
+    <div id="s1h1" class="abs h1"></div>
+    <div id="s1h2" class="abs h1"></div>
+  </div>
+
+  <!-- SCENE 2 -->
+  <div id="s2" class="scene">
+    <div id="s2logo" class="abs" style="left:0;top:0;width:1080px;height:1920px;">
+      <div id="s2icon" class="pole"></div>
+      <div id="s2word" class="abs display"></div>
+      <div id="s2tag" class="abs">GESTÃO DE BARBEARIAS</div>
+    </div>
+    <div id="s2meet" class="abs display">Conheça o <span class="accent">KORTTA</span>.</div>
+    <div id="laptop" class="abs"><div id="lapScreen"><div class="img"></div><div id="lapOn"></div></div><div id="lapBase"></div></div>
+  </div>
+
+  <!-- SCENE 3 -->
+  <div id="s3" class="scene">
+    <div class="abs eyebrow" style="left:80px; top:200px;" id="s3e">VISÃO GERAL</div>
+    <div class="abs title" style="left:80px; top:250px; width:920px;" id="s3t"><div>Tudo sob controle.</div><div style="color:#e63946">Em um só lugar.</div></div>
+    <div class="win" id="s3win" style="top:470px;">
+      <div class="chrome"><span></span><span></span><span></span><div class="url">Kortta · Visão geral</div></div>
+      <div class="shot" style="height:468px;"><img src="assets/demo-dashboard.png" style="width:960px"><div class="hl" id="s3hl"></div></div>
+    </div>
+    <div id="s3cards"></div>
+  </div>
+
+  <!-- SCENE 4 -->
+  <div id="s4" class="scene">
+    <div class="abs eyebrow" style="left:80px; top:200px;" id="s4e">AGENDA</div>
+    <div class="abs title" style="left:80px; top:250px; width:940px; font-size:74px;" id="s4t"><div>Agenda organizada.</div><div style="color:#e63946">Atendimento mais eficiente.</div></div>
+    <div class="win" id="s4win" style="top:470px;">
+      <div class="chrome"><span></span><span></span><span></span><div class="url">Kortta · Agenda</div></div>
+      <div class="shot" style="height:468px;"><img src="assets/demo-agenda.png" style="width:960px"><div class="hl" id="s4hl"></div></div>
+    </div>
+    <div id="s4crops"></div>
+  </div>
+
+  <!-- SCENE 5 -->
+  <div id="s5" class="scene">
+    <div class="abs eyebrow" style="left:80px; top:200px;" id="s5e">MARKETING</div>
+    <div class="abs title" style="left:80px; top:250px; width:920px;" id="s5t"><div>Crie motivos para seus</div><div style="color:#e63946">clientes voltarem.</div></div>
+    <div class="win" id="s5win" style="top:470px;">
+      <div class="chrome"><span></span><span></span><span></span><div class="url">Kortta · Marketing</div></div>
+      <div class="shot" style="height:468px;"><img src="assets/demo-marketing.png" style="width:960px"><div class="hl" id="s5hl"></div></div>
+    </div>
+    <div id="s5crops"></div>
+  </div>
+
+  <!-- SCENE 6 -->
+  <div id="s6" class="scene" style="perspective:1800px;">
+    <div id="s6giant" class="abs display">kortta</div>
+    <div id="s6phone" class="abs"><div id="s6screen"><div id="s6notch"></div>
+      <div id="land">
+        <div class="lhead"><div class="brand"><div class="pole"></div><b>kortta</b></div><div class="lbtn">Começar agora →</div></div>
+        <div class="leyebrow">A rotina da barbearia, no controle</div>
+        <div class="lh1">Corte o caos.<br><span>Encha a cadeira.</span></div>
+        <div class="lp">Agenda, equipe e caixa em um só lugar. Mais presença na cadeira. Menos tempo atrás do balcão.</div>
+        <div class="lcta">Organize sua barbearia →</div>
+        <div class="lcard" id="landCard"></div>
+      </div>
+    </div></div>
+    <div id="s6card" class="abs"><div class="lcard" id="floatCard"></div></div>
+    <div id="s6end" class="abs" style="left:0;top:0;width:1080px;height:1920px;">
+      <div id="s6icon" class="pole"></div>
+      <div id="s6word" class="abs display"></div>
+      <div id="s6main" class="abs display">Sua barbearia <span>no controle.</span></div>
+      <div id="s6sub" class="abs">Conheça a plataforma e transforme sua gestão.</div>
+      <div id="s6cta" class="abs"><div class="shine"></div>
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        CLIQUE NO LINK DA BIO E CONHEÇA.</div>
+    </div>
+  </div>
+
+  <div id="stripes"></div>
+  <div id="cap"><div id="capBox"></div></div>
+  <div id="vignette"></div>
+  <div id="flash"></div>
+  <div id="fadeout"></div>
+</div>
+
+<script>
+// ---------- helpers ----------
+const $ = id => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const p = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, k) => a + (b - a) * k;
+const eOut = k => 1 - Math.pow(1 - k, 3);
+const eOut5 = k => 1 - Math.pow(1 - k, 5);
+const eIn = k => k * k * k;
+const eIO = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const eBack = k => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); };
+function set(el, o = {}) {
+  if (typeof el === 'string') el = $(el);
+  const tr = [];
+  if (o.persp) tr.push(`perspective(${o.persp}px)`);
+  if (o.x || o.y) tr.push(`translate(${o.x || 0}px, ${o.y || 0}px)`);
+  if (o.rx) tr.push(`rotateX(${o.rx}deg)`);
+  if (o.ry) tr.push(`rotateY(${o.ry}deg)`);
+  if (o.r) tr.push(`rotate(${o.r}deg)`);
+  if (o.s !== undefined) tr.push(`scale(${o.s})`);
+  el.style.transform = tr.join(' ');
+  if (o.o !== undefined) { el.style.opacity = o.o; el.style.visibility = o.o <= 0.001 ? 'hidden' : 'visible'; }
+  el.style.filter = o.blur ? `blur(${o.blur}px)` : '';
+}
+// pseudo-random deterministic
+const rnd = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+
+function splitWords(el, html) {
+  el.innerHTML = html.map(w => `<span class="word${w.c ? ' ' + w.c : ''}">${w.t}</span>`).join(' ');
+  return [...el.querySelectorAll('.word')];
+}
+const s1w1 = splitWords($('s1h1'), [{ t: 'Sua' }, { t: 'barbearia' }, { t: 'está' }, { t: 'crescendo.' }]);
+const s1w2 = splitWords($('s1h2'), [{ t: 'Mas' }, { t: 'sua' }, { t: 'gestão' }, { t: 'está' }, { t: 'acompanhando?', c: 'accent' }]);
+function letters(el, txt) { el.innerHTML = [...txt].map(c => `<span class="word">${c}</span>`).join(''); return [...el.children]; }
+const s2letters = letters($('s2word'), 'kortta');
+const s6letters = letters($('s6word'), 'kortta');
+
+// landing card markup (from the real landing page)
+const cardHTML = `<div class="top"><div><div class="k">Terça-feira, 18 de junho</div><div class="t">A casa está em ritmo.</div></div><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0e1a2b" stroke-width="2.4"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div></div>
+<div class="money"><div><div style="font-size:14px;color:#7a8aa3">Faturamento hoje</div><div class="v">R$ 1.840<span>,00</span></div></div><div class="pill">↗ 12,4%</div></div>
+<div class="lrow"><div class="h">09:00</div><div class="av">RM</div><div><div class="n">Rafael Mendes</div><div class="s">Degradê + barba</div></div><div class="st">Concluído</div></div>
+<div class="lrow on"><div class="h">10:30</div><div class="av">CN</div><div><div class="n">Caio Nunes</div><div class="s">Corte clássico</div></div><div class="st">Na cadeira</div></div>
+<div class="lrow"><div class="h">11:15</div><div class="av">LF</div><div><div class="n">Lucas Ferreira</div><div class="s">Corte + sobrancelha</div></div><div class="st">A seguir</div></div>`;
+$('landCard').innerHTML = cardHTML; $('floatCard').innerHTML = cardHTML;
+
+// ---------- Scene 1 data ----------
+const msgs = [
+  ['Cliente', 'Oi! Tem horário hoje às 18h?', 0.55],
+  ['Caio', 'Posso remarcar pra amanhã?', 0.95],
+  ['Cliente', 'Quanto tá corte + barba?', 1.35],
+  ['Lucas', 'Tô chegando, 10 min atrasado', 1.7],
+  ['Pedro', 'Vocês abrem domingo?', 2.05],
+  ['Felipe', 'Cancela o meu das 15h?', 2.4],
+  ['Cliente', 'Tem horário com o Rafa?', 2.7],
+  ['Rafael', 'Confirmado o das 9h?', 3.0],
+  ['Cliente', 'Alguém aí??', 3.3],
+  ['Mateus', 'Dá pra encaixar agora?', 3.55],
+  ['Cliente', 'Oi?', 3.8],
+  ['Gabriel', 'Quero marcar pro sábado', 4.05],
+];
+const bubbleEls = msgs.map(([who, txt]) => { const b = document.createElement('div'); b.className = 'bubble'; b.innerHTML = `<i>${who}</i>${txt}`; $('bubbles').appendChild(b); return b; });
+const BUBBLE_H = 108, SCREEN_BOTTOM = 770;
+
+// ---------- crops from real screenshots ----------
+function makeCrop(parent, src, natW, x, y, w, h, scale, radius) {
+  const d = document.createElement('div');
+  d.className = 'crop';
+  d.style.width = (w * scale) + 'px'; d.style.height = (h * scale) + 'px';
+  d.style.backgroundImage = `url(${src})`;
+  d.style.backgroundSize = (natW * scale) + 'px auto';
+  d.style.backgroundPosition = `${-x * scale}px ${-y * scale}px`;
+  d.style.borderRadius = (radius * scale) + 'px';
+  const ring = document.createElement('div'); ring.className = 'ring'; d.appendChild(ring);
+  $(parent).appendChild(d);
+  return d;
+}
+// Visão geral KPI cards (natural px of the 1872x912 capture)
+const kpi = [[288, 211], [610, 211], [932, 211], [1254, 211]];
+const KW = 306, KH = 150.5, KS = 1.35;
+const KPI_DATA = [
+  { label: 'Agendamentos hoje', value: 12, money: false, det: 'na agenda', icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>' },
+  { label: 'Receita do mês', value: 8450, money: true, det: 'faturamento acumulado', icon: '<circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8M12 18V6"/>' },
+  { label: 'Clientes ativos', value: 186, money: false, det: 'na sua base', icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>' },
+  { label: 'Serviços', value: 10, money: false, det: 'no catálogo', icon: '<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>' },
+];
+const fmtKpi = (d, v) => d.money ? v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : String(Math.round(v));
+const s3cards = KPI_DATA.map(d => {
+  const c = document.createElement('div'); c.className = 'crop';
+  c.style.width = (KW * KS) + 'px'; c.style.height = (KH * KS) + 'px'; c.style.borderRadius = (15 * KS) + 'px';
+  c.innerHTML = `<div class="kpi" style="transform:scale(${KS})"><div class="row"><span class="lab">${d.label}</span><span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d.icon}</svg></span></div><div class="val">${fmtKpi(d, 0)}</div><div class="det">${d.det}</div></div><div class="ring"></div>`;
+  $('s3cards').appendChild(c); return c;
+});
+const GX = (1080 - (KW * KS * 2 + 30)) / 2;
+const gridPos = [[GX, 1010], [GX + KW * KS + 30, 1010], [GX, 1010 + KH * KS + 26], [GX + KW * KS + 30, 1010 + KH * KS + 26]];
+s3cards.forEach((c, i) => { c.style.left = gridPos[i][0] + 'px'; c.style.top = gridPos[i][1] + 'px'; });
+
+// Agenda crops (tela de demonstração 1600 px lógicos)
+const s4date = makeCrop('s4crops', 'assets/demo-agenda.png', 1600, 289, 349, 1075, 341, 0.874, 15);
+s4date.style.left = '70px'; s4date.style.top = '995px'; s4date.style.backgroundColor = '#fff';
+const s4btn = makeCrop('s4crops', 'assets/demo-agenda.png', 1600, 1353.8, 139, 206.3, 44, 2.0, 9);
+s4btn.style.left = (540 - 206.3) + 'px'; s4btn.style.top = '1335px';
+// Marketing crops
+const s5head = makeCrop('s5crops', 'assets/demo-marketing.png', 1600, 289, 257, 1000, 324, 0.94, 15);
+s5head.style.left = '70px'; s5head.style.top = '995px'; s5head.style.backgroundColor = '#fff';
+const s5btn = makeCrop('s5crops', 'assets/demo-marketing.png', 1600, 1380.1, 139, 179.9, 44, 2.3, 9);
+s5btn.style.left = (540 - 179.9 * 2.3 / 2) + 'px'; s5btn.style.top = '1335px';
+
+function makeCursor(parent) {
+  const c = document.createElement('div'); c.className = 'cursor';
+  c.innerHTML = `<svg viewBox="0 0 24 24" width="56" height="56"><path d="M4 2l16 9-7 1.6L9.6 20z" fill="#fff" stroke="#0e1a2b" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+  const r = document.createElement('div'); r.className = 'ripple';
+  $(parent).appendChild(r); $(parent).appendChild(c); return [c, r];
+}
+const [cur4, rip4] = makeCursor('s4crops');
+const [cur5, rip5] = makeCursor('s5crops');
+
+// ---------- captions ----------
+const caps = [
+  [0.25, 2.65, 'Você abriu uma barbearia para empreender,'],
+  [2.65, 5.0, 'não para passar o dia inteiro tentando organizar tudo.'],
+  [5.7, 9.7, 'Chegou o Kortta: gestão inteligente para barbearias.'],
+  [10.3, 15.7, 'Acompanhe seus números, seus clientes e o movimento da sua barbearia.'],
+  [16.3, 21.7, 'Organize seus agendamentos e tenha mais controle sobre sua rotina.'],
+  [22.3, 26.8, 'Movimente sua agenda com campanhas e ações para seus clientes.'],
+  [27.3, 30.9, 'Kortta. Menos tempo cuidando da operação.'],
+  [30.9, 34.4, 'Mais tempo fazendo sua barbearia crescer.'],
+  [34.4, 37.6, 'Conheça agora!'],
+];
+let capIdx = -2;
+function renderCaption(t) {
+  const i = caps.findIndex(([a, b]) => t >= a && t < b);
+  const box = $('capBox');
+  if (i !== capIdx) {
+    capIdx = i;
+    box.innerHTML = i < 0 ? '' : caps[i][2].split(' ').map(w => `<span class="w">${w}</span>`).join(' ');
+  }
+  if (i < 0) { set('cap', { o: 0 }); return; }
+  const [a, b] = caps[i];
+  const k = eOut(p(t, a, a + .25)), out = 1 - p(t, b - .15, b);
+  set('cap', { o: Math.min(k, out), y: (1 - k) * 18 });
+  const words = box.querySelectorAll('.w');
+  const speakEnd = a + (b - a) * 0.82;
+  words.forEach((w, j) => {
+    const wt = lerp(a, speakEnd, j / words.length);
+    const on = p(t, wt, wt + .12);
+    w.style.opacity = lerp(.35, 1, on);
+    w.style.color = (t >= wt && t < wt + (speakEnd - a) / words.length + .05) ? '#ff5a66' : '#ffffff';
+  });
+}
+
+// ---------- scene helpers ----------
+function sceneVis(t, start, end, el, inDur = .5, outDur = .4, mode = 'slide') {
+  const ki = eOut5(p(t, start, start + inDur)), ko = eIn(p(t, end - outDur, end));
+  const vis = t >= start - .01 && t <= end + .01;
+  if (!vis) { set(el, { o: 0 }); return { ki: 0, ko: 1, vis }; }
+  if (mode === 'slide') set(el, { o: Math.min(ki, 1 - ko), x: (1 - ki) * 260 - ko * 320, blur: (1 - ki) * 14 + ko * 18 });
+  else set(el, { o: Math.min(ki, 1 - ko) });
+  return { ki, ko, vis };
+}
+function rise(el, t, a, d = .6, dist = 60) { const k = eOut5(p(t, a, a + d)); set(el, { o: k, y: (1 - k) * dist, blur: (1 - k) * 8 }); return k; }
+
+// ---------- main render ----------
+function render(t) {
+  // background drift
+  set('glowR', { x: 600 + Math.sin(t * .35) * 160, y: 300 + Math.cos(t * .27) * 220 });
+  set('glowB', { x: -100 + Math.cos(t * .3) * 180, y: 1100 + Math.sin(t * .22) * 200 });
+  $('grid').style.backgroundPosition = `0 ${t * 18}px`;
+
+  // ===== Scene 1 (0 – 5.15) =====
+  const s1on = t < 5.2;
+  set('s1', { o: s1on ? 1 : 0 });
+  if (s1on) {
+    const chaos = p(t, 2.6, 4.7);
+    const shake = chaos * chaos * 9;
+    const sx = (rnd(Math.floor(t * 30)) - .5) * shake, sy = (rnd(Math.floor(t * 30) + 99) - .5) * shake;
+    s1w1.forEach((w, i) => { const k = eOut5(p(t, .15 + i * .09, .75 + i * .09)); set(w, { o: k, y: (1 - k) * 70, blur: (1 - k) * 10 }); });
+    s1w2.forEach((w, i) => { const k = eOut5(p(t, 2.3 + i * .1, 2.9 + i * .1)); set(w, { o: k, y: (1 - k) * 70, blur: (1 - k) * 10 }); });
+    // headline 1 dims as headline 2 arrives
+    $('s1h1').style.opacity = lerp(1, .55, p(t, 2.3, 2.8));
+    const pk = eOut5(p(t, .1, 1.0));
+    set('paper', { o: pk, x: sx * .6 - (1 - pk) * 120, y: sy * .6 + (1 - pk) * 160 + Math.sin(t * 1.3) * 6, r: lerp(-14, -5, pk) + chaos * 2 * Math.sin(t * 17) });
+    const sk = eOut5(p(t, 1.6, 2.2));
+    set('sticky', { o: sk, s: lerp(1.6, 1, sk), r: lerp(20, 8, sk) + chaos * 3 * Math.sin(t * 21), x: sx * .4, y: sy * .4 });
+    document.querySelectorAll('#paper .strike').forEach(s => { const tt = +s.dataset.t; s.style.width = (eOut(p(t, tt, tt + .35)) * 360) + 'px'; });
+    const ck = eOut(p(t, 3.6, 3.9)); set('circ1', { o: ck, s: lerp(1.3, 1, ck) });
+    const phk = eOut5(p(t, .2, 1.0));
+    set('phone', { o: phk, x: sx + (1 - phk) * 200, y: sy + (1 - phk) * 200 + Math.sin(t * 1.1 + 1) * 8, r: lerp(14, 6, phk) + chaos * 1.5 * Math.sin(t * 23) });
+    // bubbles stack
+    msgs.forEach((m, i) => {
+      const k = eBack(p(t, m[2], m[2] + .32));
+      let push = 0; for (let j = i + 1; j < msgs.length; j++) push += BUBBLE_H * eOut(p(t, msgs[j][2], msgs[j][2] + .25));
+      const y = SCREEN_BOTTOM - BUBBLE_H - push;
+      bubbleEls[i].style.top = y + 'px';
+      set(bubbleEls[i], { o: t >= m[2] ? clamp(k) : 0, s: lerp(.6, 1, clamp(k, 0, 1.2)), x: (i % 3 === 1 ? 30 : 0) });
+      bubbleEls[i].style.transformOrigin = '0% 100%';
+    });
+    const count = msgs.filter(m => t >= m[2]).length;
+    $('badge').textContent = count;
+    const lastArr = Math.max(...msgs.filter(m => t >= m[2]).map(m => m[2]), -9);
+    const bump = 1 + .25 * Math.max(0, 1 - (t - lastArr) / .2);
+    set('badge', { o: count ? 1 : 0, s: bump, x: sx + (1 - phk) * 200, y: sy + (1 - phk) * 200 });
+    // end of scene: pressure zoom
+    const z = eIn(p(t, 4.2, 5.15));
+    $('s1').style.transform = `scale(${1 + z * .12})`;
+    $('s1').style.filter = `saturate(${1 - z * .6}) blur(${z * 6}px)`;
+  }
+
+  // stripes wipe (4.7 – 5.6)
+  {
+    const k = eIO(p(t, 4.65, 5.65));
+    const on = t > 4.6 && t < 5.7;
+    $('stripes').style.visibility = on ? 'visible' : 'hidden';
+    $('stripes').style.transform = `translateX(${lerp(-2700, 2900, k)}px) rotate(-28deg)`;
+    $('stripes').style.backgroundPosition = `${t * 400}px 0`;
+  }
+
+  // ===== Scene 2 (5.15 – 10.3) =====
+  const s2on = t >= 5.15 && t < 10.4;
+  set('s2', { o: s2on ? 1 : 0 });
+  if (s2on) {
+    const ik = eBack(p(t, 5.3, 6.1));
+    $('s2icon').style.backgroundPosition = `${t * 70}px 0`;
+    set('s2icon', { o: clamp(p(t, 5.3, 5.5)), s: clamp(ik, 0, 1.3), r: lerp(-120, 0, eOut5(p(t, 5.3, 6.1))) });
+    s2letters.forEach((l, i) => { const k = eOut5(p(t, 5.65 + i * .06, 6.25 + i * .06)); set(l, { o: k, y: (1 - k) * 120, blur: (1 - k) * 12 }); });
+    const tk = eOut5(p(t, 6.2, 6.9)); $('s2tag').style.opacity = tk; $('s2tag').style.letterSpacing = lerp(.9, .42, tk) + 'em';
+    const mk = eOut5(p(t, 6.7, 7.3));
+    // logo moves up as laptop comes in
+    const up = eIO(p(t, 7.8, 8.8));
+    set('s2logo', { y: -up * 420, s: lerp(1, .62, up) });
+    $('s2logo').style.transformOrigin = '50% 30%';
+    set('s2meet', { o: mk * (1 - p(t, 7.7, 8.0)), y: (1 - mk) * 50 + p(t, 7.7, 8.0) * -30, blur: (1 - mk) * 8 });
+    const lk = eOut5(p(t, 8.0, 9.0));
+    const zoom = eIn(p(t, 9.7, 10.4));
+    set('laptop', { o: lk * (1 - zoom), y: (1 - lk) * 700 - 40 + zoom * -60, rx: lerp(28, 6, lk), s: 1 + zoom * .5, persp: 1600, blur: zoom * 10 });
+    $('lapOn').style.opacity = 1 - p(t, 8.6, 9.2);
+    $('lapOn').style.background = '#ffffff';
+    if (t > 9.75) $('s2logo').style.opacity = 1 - p(t, 9.75, 10.2);
+    else $('s2logo').style.opacity = 1;
+  }
+
+  // ===== Scene 3: Visão geral (10.0 – 16.2) =====
+  {
+    const { ki, vis } = sceneVis(t, 10.0, 16.2, $('s3'), .6, .45);
+    if (vis) {
+      rise($('s3e'), t, 10.2); rise($('s3t'), t, 10.3, .7, 80);
+      const wk = eOut5(p(t, 10.0, 10.9));
+      const push = p(t, 10.0, 16.2);
+      set('s3win', { o: wk, y: (1 - wk) * 120, s: lerp(.86, 1, wk) * (1 + push * .02), rx: lerp(22, 0, wk) + 3, persp: 1800 });
+      // card pop-outs: fly from the window position to the grid
+      const winScale = 960 / 1600, winTop = 470 + 46;
+      s3cards.forEach((c, i) => {
+        const a = 11.6 + i * .28;
+        const k = eOut5(p(t, a, a + .7));
+        const fromX = 60 + kpi[i][0] * winScale, fromY = winTop + kpi[i][1] * winScale;
+        const toX = gridPos[i][0], toY = gridPos[i][1];
+        const sc = lerp(winScale / KS, 1, k);
+        c.style.transformOrigin = '0 0';
+        set(c, { o: p(t, a, a + .12), x: lerp(fromX - toX, 0, k), y: lerp(fromY - toY, 0, k), s: sc });
+        // spotlight sequence
+        const hs = 13.1 + i * .62;
+        const h = p(t, hs, hs + .2) * (1 - p(t, hs + .55, hs + .75));
+        c.querySelector('.ring').style.opacity = h;
+        c.style.zIndex = h > 0 ? 5 : 1;
+        if (k >= 1) { set(c, { o: 1, s: 1 + h * .05, y: -h * 10 }); c.style.transformOrigin = '50% 50%'; }
+        // contagem crescente (só efeito visual)
+        const cnt = eOut(p(t, a + .3, a + 1.5));
+        c.querySelector('.val').textContent = fmtKpi(KPI_DATA[i], KPI_DATA[i].value * cnt);
+      });
+      // highlight inside window follows the spotlight
+      const hl = $('s3hl');
+      const idx = clamp(Math.floor((t - 13.1) / .62), 0, 3);
+      const on = t > 13.1 && t < 15.6 ? 1 : 0;
+      hl.style.left = (kpi[idx][0] * winScale - 4) + 'px'; hl.style.top = (kpi[idx][1] * winScale - 4) + 'px';
+      hl.style.width = (KW * winScale + 8) + 'px'; hl.style.height = (KH * winScale + 8) + 'px';
+      hl.style.opacity = on;
+    }
+  }
+
+  // ===== Scene 4: Agenda (16.0 – 22.2) =====
+  {
+    const { vis } = sceneVis(t, 15.95, 22.2, $('s4'), .6, .45);
+    if (vis) {
+      rise($('s4e'), t, 16.2); rise($('s4t'), t, 16.3, .7, 80);
+      const wk = eOut5(p(t, 16.0, 16.9));
+      set('s4win', { o: wk, y: (1 - wk) * 120, s: lerp(.86, 1, wk) * (1 + p(t, 16, 22.2) * .02), rx: lerp(22, 0, wk) + 3, persp: 1800 });
+      const ws = 960 / 1600, wt = 470 + 46;
+      // date filter pops out
+      const dk = eOut5(p(t, 17.3, 18.0));
+      s4date.style.transformOrigin = '0 0';
+      const dLeft = 70;
+      set(s4date, { o: p(t, 17.3, 17.42), x: lerp(60 + 289 * ws - dLeft, 0, dk), y: lerp(wt + 349 * ws - 995, 0, dk), s: lerp(ws / 0.874, 1, dk) });
+      // button pops out
+      const bk = eOut5(p(t, 18.0, 18.7));
+      const bLeft = 540 - 206.3;
+      s4btn.style.transformOrigin = '0 0';
+      const press = p(t, 19.55, 19.65) * (1 - p(t, 19.7, 19.9));
+      if (bk < 1) set(s4btn, { o: p(t, 18.0, 18.12), x: lerp(60 + 1353.8 * ws - bLeft, 0, bk), y: lerp(wt + 139 * ws - 1335, 0, bk), s: lerp(ws / 2.0, 1, bk) });
+      else { s4btn.style.transformOrigin = '50% 50%'; set(s4btn, { o: 1, s: 1 - press * .06 }); }
+      s4btn.querySelector('.ring').style.opacity = p(t, 19.6, 19.8) * (1 - p(t, 21.2, 21.6));
+      // highlight in window
+      const hl = $('s4hl'); const which = t < 18 ? 0 : 1;
+      const R = which ? [1353.8, 139, 206.3, 44] : [289, 349, 1075, 341];
+      hl.style.left = (R[0] * ws - 4) + 'px'; hl.style.top = (R[1] * ws - 4) + 'px'; hl.style.width = (R[2] * ws + 8) + 'px'; hl.style.height = (R[3] * ws + 8) + 'px';
+      hl.style.opacity = p(t, 17.0, 17.3) * (1 - p(t, 21.3, 21.6));
+      // cursor
+      const ck = eIO(p(t, 18.7, 19.5));
+      const cx = lerp(900, 540 + 110, ck), cy = lerp(1520, 1335 + 50, ck);
+      set(cur4, { o: p(t, 18.6, 18.8) * (1 - p(t, 21.0, 21.3)), x: cx, y: cy + press * 6, s: 1 - press * .15 });
+      const rk = p(t, 19.6, 20.3);
+      rip4.style.left = (540 + 110 - 20) + 'px'; rip4.style.top = (1335 + 50 - 20) + 'px';
+      rip4.style.width = rip4.style.height = '40px';
+      set(rip4, { o: rk > 0 && rk < 1 ? (1 - rk) : 0, s: 1 + rk * 5 });
+    }
+  }
+
+  // ===== Scene 5: Marketing (22.0 – 27.2) =====
+  {
+    const { vis } = sceneVis(t, 21.95, 27.15, $('s5'), .6, .4);
+    if (vis) {
+      rise($('s5e'), t, 22.2); rise($('s5t'), t, 22.3, .7, 80);
+      const wk = eOut5(p(t, 22.0, 22.9));
+      set('s5win', { o: wk, y: (1 - wk) * 120, s: lerp(.86, 1, wk) * (1 + p(t, 22, 27.2) * .02), rx: lerp(22, 0, wk) + 3, persp: 1800 });
+      const ws = 960 / 1600, wt = 470 + 46;
+      const hk = eOut5(p(t, 23.1, 23.8));
+      const hLeft = 70;
+      s5head.style.transformOrigin = '0 0';
+      set(s5head, { o: p(t, 23.1, 23.22), x: lerp(60 + 289 * ws - hLeft, 0, hk), y: lerp(wt + 257 * ws - 995, 0, hk), s: lerp(ws / 0.94, 1, hk) });
+      const bk = eOut5(p(t, 23.7, 24.4));
+      const bLeft = 540 - 179.9 * 2.3 / 2;
+      const press = p(t, 25.15, 25.25) * (1 - p(t, 25.3, 25.5));
+      if (bk < 1) { s5btn.style.transformOrigin = '0 0'; set(s5btn, { o: p(t, 23.7, 23.82), x: lerp(60 + 1380.1 * ws - bLeft, 0, bk), y: lerp(wt + 139 * ws - 1335, 0, bk), s: lerp(ws / 2.3, 1, bk) }); }
+      else { s5btn.style.transformOrigin = '50% 50%'; set(s5btn, { o: 1, s: 1 - press * .06 }); }
+      s5btn.querySelector('.ring').style.opacity = p(t, 25.2, 25.4) * (1 - p(t, 26.5, 26.9));
+      const hl = $('s5hl'); const which = t < 23.7 ? 0 : 1;
+      const R = which ? [1380.1, 139, 179.9, 44] : [289, 257, 1000, 324];
+      hl.style.left = (R[0] * ws - 4) + 'px'; hl.style.top = (R[1] * ws - 4) + 'px'; hl.style.width = (R[2] * ws + 8) + 'px'; hl.style.height = (R[3] * ws + 8) + 'px';
+      hl.style.opacity = p(t, 22.9, 23.1) * (1 - p(t, 26.6, 26.9));
+      const ck = eIO(p(t, 24.4, 25.1));
+      const tx = 540 + 110, ty = 1335 + 55;
+      set(cur5, { o: p(t, 24.3, 24.5) * (1 - p(t, 26.5, 26.8)), x: lerp(220, tx, ck), y: lerp(1520, ty, ck) + press * 6, s: 1 - press * .15 });
+      const rk = p(t, 25.2, 25.9);
+      rip5.style.left = (tx - 20) + 'px'; rip5.style.top = (ty - 20) + 'px'; rip5.style.width = rip5.style.height = '40px';
+      set(rip5, { o: rk > 0 && rk < 1 ? (1 - rk) : 0, s: 1 + rk * 5 });
+    }
+  }
+
+  // ===== Scene 6: Landing + encerramento (27.0 – 38) =====
+  const s6on = t >= 26.9;
+  set('s6', { o: s6on ? clamp(p(t, 26.9, 27.3)) : 0 });
+  if (s6on) {
+    const pk = eOut5(p(t, 27.0, 28.1));
+    const leave = eIn(p(t, 31.0, 31.7));
+    set('s6phone', { o: pk * (1 - leave), y: (1 - pk) * 500 + leave * 300, ry: lerp(-30, -8, pk) + p(t, 28, 31) * 14, rx: lerp(18, 4, pk), s: lerp(.85, .95, pk) * (1 - leave * .3), blur: leave * 14 });
+    // slow scroll of the landing inside the phone
+    $('land').style.transform = `translateY(${-eIO(p(t, 28.4, 30.8)) * 170}px)`;
+    // giant watermark drift
+    set('s6giant', { o: pk * (1 - leave), x: lerp(200, -200, p(t, 27, 31.5)) });
+    // floating card pops out of the phone
+    const fk = eOut5(p(t, 29.0, 29.8));
+    set('s6card', { o: fk * (1 - leave), x: (1 - fk) * -180, y: (1 - fk) * 120 + Math.sin(t * 1.6) * 8 + leave * 200, r: lerp(-8, 3, fk), s: lerp(.8, 1, fk), blur: leave * 10 });
+    // flash
+    $('flash').style.opacity = .55 * p(t, 31.45, 31.6) * (1 - p(t, 31.6, 32.0));
+    // logo
+    const ik = eBack(p(t, 31.55, 32.3));
+    $('s6icon').style.backgroundPosition = `${t * 70}px 0`;
+    set('s6icon', { o: clamp(p(t, 31.55, 31.7)), s: clamp(ik, 0, 1.3), r: lerp(-120, 0, eOut5(p(t, 31.55, 32.3))) });
+    s6letters.forEach((l, i) => { const k = eOut5(p(t, 31.8 + i * .06, 32.4 + i * .06)); set(l, { o: k, y: (1 - k) * 120, blur: (1 - k) * 12 }); });
+    rise($('s6main'), t, 32.5, .7, 70);
+    rise($('s6sub'), t, 33.3, .7, 50);
+    const ck = eBack(p(t, 34.2, 34.9));
+    const pulse = t > 35 ? 1 + Math.sin((t - 35) * 6) * .025 : 1;
+    set('s6cta', { o: clamp(p(t, 34.2, 34.4)), s: clamp(ck, 0, 1.2) * pulse });
+    const sh = $('s6cta').querySelector('.shine');
+    sh.style.left = lerp(-200, 1100, ((t - 35.2) % 1.6) / 1.6 * (t > 35.2 ? 1 : 0)) + 'px';
+    $('s6cta').style.boxShadow = `0 30px 80px #e6394677, 0 0 0 ${t > 35 ? (Math.sin((t - 35) * 6) * .5 + .5) * 14 : 0}px #e6394633`;
+  }
+  $('fadeout').style.opacity = p(t, 37.6, 38.0) * .9;
+
+  renderCaption(t);
+}
+window.render = render;
+window.DURATION = 38;
+render(0);
+</script>
+</body>
+</html>

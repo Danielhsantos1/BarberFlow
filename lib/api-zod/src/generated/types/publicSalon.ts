@@ -5,7 +5,7 @@
  * API do BarberFlow para operação de barbearias por tenant
  * OpenAPI spec version: 0.1.0
  */
-import type { Barber } from './barber';
+import type { PublicBarber } from './publicBarber';
 import type { Service } from './service';
 
 export interface PublicSalon {
@@ -17,5 +17,5 @@ export interface PublicSalon {
   /** @nullable */
   logoUrl?: string | null;
   services: Service[];
-  barbers: Barber[];
+  barbers: PublicBarber[];
 }
