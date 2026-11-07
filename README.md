@@ -34,6 +34,14 @@ Abra http://localhost:5173. Em desenvolvimento o Vite repassa `/api` para a API.
 
 ## Deploy
 
+### Vercel (atual)
+
+O projeto já está configurado (`vercel.json` + `scripts/vercel-build.mjs`): o site vai para a CDN e a API roda como uma função serverless em `/api`. Cada push na `main` publica automaticamente.
+
+Variáveis no painel da Vercel (Settings → Environment Variables): `DATABASE_URL`, `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `VITE_CLERK_PUBLISHABLE_KEY`. Depois de mudar variáveis, faça um **Redeploy**.
+
+### Servidor Node tradicional (Render, Railway, VPS)
+
 Em produção é **um único serviço Node**: a API serve o front já buildado.
 
 - Build: `pnpm install --frozen-lockfile && pnpm run build`
