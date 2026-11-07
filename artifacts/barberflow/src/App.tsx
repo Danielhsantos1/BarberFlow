@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/reac
 import { Link, Redirect, Route, Router as WouterRouter, Switch, useLocation, useParams } from 'wouter';
 import {
   Activity, ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, CalendarDays, Check,
-  ChevronDown, CircleDollarSign, Gift, LayoutDashboard, LogOut, MessageCircle,
+  ChevronDown, CircleDollarSign, Copy, ExternalLink, Gift, LayoutDashboard, LogOut, MessageCircle,
   Menu, Package, Plus, Scissors, Search, Settings, ShoppingBag, Sparkles, Users, X,
 } from 'lucide-react';
 import {
@@ -201,7 +201,7 @@ function PageShell({ children, salon }: { children: ReactNode; salon: any }) {
     <Link href="/dashboard" className="px-2 pb-7"><Brand /></Link>
     <div className="mb-2 px-3 text-[9px] font-semibold uppercase tracking-[.2em] text-[#77756e]">Workspace</div>
     <nav className="space-y-1">{navItems.map(item=>{const Icon=item.icon;return <Link key={item.href} href={item.href} onClick={()=>setMobileOpen(false)} className={`nav-link ${location===item.href?'active':''}`}><Icon size={16}/><span>{item.label}</span>{item.href==='/agenda'&&<span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#d4af37]"/>}</Link>})}</nav>
-    <div className="mt-auto border-t border-[#ffffff1c] pt-4"><div className="mb-4 flex items-center gap-3 rounded-xl bg-[#ffffff0b] p-3"><div className="grid h-9 w-9 place-items-center rounded-lg bg-[#d4af37] text-xs font-bold text-[#17140b]">{initials(salon?.name)}</div><div className="min-w-0 flex-1"><div className="truncate text-xs font-semibold text-[#eeeadf]">{salon?.name || 'Minha barbearia'}</div><div className="mt-1 truncate text-[10px] text-[#96928a]">Plano {salon?.plan || 'free'}</div></div><ChevronDown size={14} className="text-[#77736c]"/></div><button className="nav-link w-full" onClick={()=>signOut({redirectUrl:basePath||'/'})}><LogOut size={16}/>Sair da conta</button></div>
+    <div className="mt-auto border-t border-[#ffffff1c] pt-4"><div className="mb-4 flex items-center gap-3 rounded-xl bg-[#ffffff0b] p-3"><div className="grid h-9 w-9 place-items-center rounded-lg bg-[#d4af37] text-xs font-bold text-[#17140b]">{initials(salon?.name)}</div><div className="min-w-0 flex-1"><div className="truncate text-xs font-semibold text-[#eeeadf]">{salon?.name || 'Minha barbearia'}</div><div className="mt-1 truncate text-[10px] text-[#96928a]">Plano {planLabel(salon?.plan)}</div></div><ChevronDown size={14} className="text-[#77736c]"/></div><button className="nav-link w-full" onClick={()=>signOut({redirectUrl:basePath||'/'})}><LogOut size={16}/>Sair da conta</button></div>
   </aside>;
   return <div className="app-shell flex min-h-[100dvh]">
     <div className="hidden w-[248px] shrink-0 lg:block">{sidebar}</div>
@@ -324,13 +324,24 @@ function MarketingPage() {
     create={payload=>create.mutate({data:{...payload,discountPct:Number(payload.discountPct),startsAt:payload.startsAt||null,endsAt:payload.endsAt||null} as any},{onSuccess:refresh})} />
 }
 
+const planLabel = (plan?: string | null) => ({ free: 'Gratuito', pro: 'Pro', business: 'Business' } as Record<string, string>)[plan || 'free'] || plan || 'Gratuito';
+
+function BookingLink({ slug }: { slug: string }) {
+  const url = `${window.location.origin}${basePath}/book/${slug}`;
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { window.prompt('Copie o link:', url); }
+  };
+  return <div className="mt-2 flex flex-wrap items-center gap-2"><code className="rounded-lg bg-[#f6f3eb] px-3 py-2 text-xs text-[#514e47] break-all">{url}</code><button type="button" className="btn-secondary inline-flex items-center gap-1.5 text-xs" onClick={() => void copy()}><Copy size={13}/>{copied ? 'Copiado!' : 'Copiar link'}</button><a className="inline-flex items-center gap-1 text-xs font-semibold text-[#8d721b]" href={url} target="_blank" rel="noreferrer"><ExternalLink size={13}/>Abrir</a></div>;
+}
+
 function SettingsPage() {
   const {data,isLoading,isError,refetch}=useGetCurrentSalon(); const update=useUpdateCurrentSalon(); const qc=useQueryClient();
   const [form,setForm]=useState<Record<string,string>>({});
   useEffect(()=>{if(data?.salon)setForm({name:data.salon.name,cnpj:data.salon.cnpj||'',address:data.salon.address,phone:data.salon.phone,whatsapp:data.salon.whatsapp,logoUrl:data.salon.logoUrl||''})},[data?.salon?.id]);
   if(isLoading)return <Loading label="Carregando dados da barbearia"/>;
   if(isError||!data)return <ErrorState message="Não foi possível carregar os dados da barbearia." retry={()=>void refetch()}/>;
-  return <section className="animate-in space-y-6"><div><div className="text-[10px] font-bold uppercase tracking-[.2em] text-[#9c7e22]">Sua casa</div><h1 className="brand-display mt-2 text-3xl font-semibold">Configurações</h1><p className="mt-2 text-sm text-[#77736c]">Mantenha as informações da barbearia sempre corretas.</p></div><form className="surface max-w-3xl p-6 sm:p-8" onSubmit={e=>{e.preventDefault();update.mutate({data:form as any},{onSuccess:()=>void qc.invalidateQueries({queryKey:getGetCurrentSalonQueryKey()})})}}><div className="grid gap-5 sm:grid-cols-2">{[{name:'name',label:'Nome da barbearia',required:true},{name:'cnpj',label:'CNPJ'},{name:'phone',label:'Telefone',required:true},{name:'whatsapp',label:'WhatsApp',required:true},{name:'address',label:'Endereço',required:true},{name:'logoUrl',label:'URL do logo'}].map(field=><label key={field.name}><span className="mb-1.5 block text-xs font-semibold text-[#514e47]">{field.label}</span><input className="field" required={field.required} value={form[field.name]??''} onChange={e=>setForm({...form,[field.name]:e.target.value})} data-testid={`input-${field.name}`}/></label>)}</div><div className="mt-7 flex items-center justify-between border-t border-[#eeeae2] pt-5"><div><div className="text-xs font-semibold">Plano atual</div><div className="mt-1 text-xs capitalize text-[#77736c]">{data.salon.plan} · página pública /book/{data.salon.slug}</div></div><button className="btn-primary" disabled={update.isPending}>{update.isPending?'Salvando...':'Salvar alterações'}</button></div>{update.isError&&<p className="mt-4 text-xs text-[#a74e41]">{errorText(update.error)}</p>}{update.isSuccess&&<p className="mt-4 text-xs text-[#4e7950]">Alterações salvas.</p>}</form></section>;
+  return <section className="animate-in space-y-6"><div><div className="text-[10px] font-bold uppercase tracking-[.2em] text-[#9c7e22]">Sua casa</div><h1 className="brand-display mt-2 text-3xl font-semibold">Configurações</h1><p className="mt-2 text-sm text-[#77736c]">Mantenha as informações da barbearia sempre corretas.</p></div><form className="surface max-w-3xl p-6 sm:p-8" onSubmit={e=>{e.preventDefault();update.mutate({data:form as any},{onSuccess:()=>void qc.invalidateQueries({queryKey:getGetCurrentSalonQueryKey()})})}}><div className="grid gap-5 sm:grid-cols-2">{[{name:'name',label:'Nome da barbearia',required:true},{name:'cnpj',label:'CNPJ'},{name:'phone',label:'Telefone',required:true},{name:'whatsapp',label:'WhatsApp',required:true},{name:'address',label:'Endereço',required:true},{name:'logoUrl',label:'URL do logo'}].map(field=><label key={field.name}><span className="mb-1.5 block text-xs font-semibold text-[#514e47]">{field.label}</span><input className="field" required={field.required} value={form[field.name]??''} onChange={e=>setForm({...form,[field.name]:e.target.value})} data-testid={`input-${field.name}`}/></label>)}</div><div className="mt-7 flex flex-wrap items-end justify-between gap-4 border-t border-[#eeeae2] pt-5"><div className="min-w-0"><div className="text-xs font-semibold">Plano atual</div><div className="mt-1 text-xs text-[#77736c]">{planLabel(data.salon.plan)} · link de agendamento para seus clientes:</div><BookingLink slug={data.salon.slug}/></div><button className="btn-primary" disabled={update.isPending}>{update.isPending?'Salvando...':'Salvar alterações'}</button></div>{update.isError&&<p className="mt-4 text-xs text-[#a74e41]">{errorText(update.error)}</p>}{update.isSuccess&&<p className="mt-4 text-xs text-[#4e7950]">Alterações salvas.</p>}</form></section>;
 }
 
 function OnboardingPage() {
