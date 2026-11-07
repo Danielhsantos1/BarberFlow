@@ -1,4 +1,4 @@
-# BarberFlow
+# Kortta
 
 SaaS de operação para barbearias: agenda online, clientes, equipe, serviços, caixa, estoque e campanhas.
 

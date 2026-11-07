@@ -12,15 +12,15 @@ export const COMPANY = {
 
 function LegalLayout({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <main className="min-h-[100dvh] bg-[#f7f5f0] px-4 py-10 text-[#262420]">
+    <main className="min-h-[100dvh] bg-[#eef2f9] px-4 py-10 text-[#182943]">
       <article className="mx-auto max-w-3xl">
-        <Link href="/" className="text-xs font-semibold text-[#8d721b]">← Voltar ao BarberFlow</Link>
+        <Link href="/" className="text-xs font-semibold text-[#8f1923]">← Voltar ao Kortta</Link>
         <h1 className="brand-display mt-6 text-3xl font-semibold">{title}</h1>
-        <p className="mt-2 text-xs text-[#77736c]">Última atualização: {COMPANY.updatedAt}</p>
+        <p className="mt-2 text-xs text-[#5e6e85]">Última atualização: {COMPANY.updatedAt}</p>
         <div className="legal mt-8 space-y-4 text-sm leading-7 [&_h2]:brand-display [&_h2]:mt-8 [&_h2]:text-lg [&_h2]:font-semibold [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6">
           {children}
         </div>
-        <footer className="mt-12 border-t border-[#e2ddd1] pt-6 text-xs text-[#77736c]">
+        <footer className="mt-12 border-t border-[#c9d6ea] pt-6 text-xs text-[#5e6e85]">
           {COMPANY.name} · CNPJ {COMPANY.cnpj} · {COMPANY.city} · <a className="underline" href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
           <div className="mt-2 flex gap-4"><Link href="/termos" className="underline">Termos de Uso</Link><Link href="/privacidade" className="underline">Política de Privacidade</Link></div>
         </footer>
@@ -33,15 +33,15 @@ export function TermsPage() {
   return (
     <LegalLayout title="Termos de Uso">
       <p>
-        Estes Termos regulam o uso do <b>BarberFlow</b>, plataforma on-line de gestão para barbearias, fornecida por{' '}
-        <b>{COMPANY.name}</b>, inscrita no CNPJ {COMPANY.cnpj}, com sede em {COMPANY.city} (“BarberFlow”, “nós”).
+        Estes Termos regulam o uso do <b>Kortta</b>, plataforma on-line de gestão para barbearias, fornecida por{' '}
+        <b>{COMPANY.name}</b>, inscrita no CNPJ {COMPANY.cnpj}, com sede em {COMPANY.city} (“Kortta”, “nós”).
         Ao criar uma conta, você declara que leu e concorda com estes Termos e com a{' '}
         <Link href="/privacidade" className="underline">Política de Privacidade</Link>.
       </p>
 
       <h2>1. O serviço</h2>
       <p>
-        O BarberFlow oferece agenda, cadastro de clientes, equipe, serviços, controle financeiro, estoque, campanhas e uma
+        O Kortta oferece agenda, cadastro de clientes, equipe, serviços, controle financeiro, estoque, campanhas e uma
         página pública de agendamento para cada barbearia. O serviço é acessado pela internet, sem instalação.
       </p>
 
@@ -54,7 +54,7 @@ export function TermsPage() {
 
       <h2>3. Fase de lançamento e preços</h2>
       <p>
-        Durante a fase de lançamento, o BarberFlow é oferecido <b>gratuitamente</b>. Planos pagos poderão ser criados no
+        Durante a fase de lançamento, o Kortta é oferecido <b>gratuitamente</b>. Planos pagos poderão ser criados no
         futuro. Nenhuma cobrança será feita sem que você escolha um plano pago, e avisaremos por e-mail com pelo menos{' '}
         <b>30 dias de antecedência</b> antes de qualquer mudança que afete recursos que você já utiliza.
       </p>
@@ -71,7 +71,7 @@ export function TermsPage() {
       <h2>5. Dados da barbearia e dos seus clientes</h2>
       <p>
         Os dados que você cadastra (clientes, agendamentos, finanças, estoque etc.) pertencem à sua barbearia. Em relação aos
-        dados pessoais dos seus clientes, <b>a barbearia é a controladora</b> e o BarberFlow atua como <b>operador</b>,
+        dados pessoais dos seus clientes, <b>a barbearia é a controladora</b> e o Kortta atua como <b>operador</b>,
         tratando esses dados apenas para prestar o serviço, conforme a{' '}
         <Link href="/privacidade" className="underline">Política de Privacidade</Link>. Cabe à barbearia informar seus
         clientes sobre o uso dos dados e atender aos pedidos deles.
@@ -87,7 +87,7 @@ export function TermsPage() {
       <h2>7. Mensagens de WhatsApp</h2>
       <p>
         Os botões de WhatsApp abrem uma conversa com o texto pré-preenchido no seu próprio aplicativo. O envio é feito por
-        você, e o BarberFlow não envia mensagens automaticamente nem se responsabiliza pelo uso do WhatsApp.
+        você, e o Kortta não envia mensagens automaticamente nem se responsabiliza pelo uso do WhatsApp.
       </p>
 
       <h2>8. Cancelamento e exclusão</h2>
@@ -99,14 +99,14 @@ export function TermsPage() {
 
       <h2>9. Responsabilidade</h2>
       <p>
-        O BarberFlow é uma ferramenta de apoio à gestão. Não nos responsabilizamos por decisões tomadas com base nas
+        O Kortta é uma ferramenta de apoio à gestão. Não nos responsabilizamos por decisões tomadas com base nas
         informações do sistema, por dados cadastrados incorretamente ou por perdas indiretas, como lucros cessantes. Nada
         nestes Termos limita direitos que não possam ser afastados por lei.
       </p>
 
       <h2>10. Propriedade intelectual</h2>
       <p>
-        A marca, o código e o design do BarberFlow pertencem ao fornecedor. O uso do serviço não transfere nenhum direito
+        A marca, o código e o design do Kortta pertencem ao fornecedor. O uso do serviço não transfere nenhum direito
         sobre eles.
       </p>
 
@@ -134,18 +134,18 @@ export function PrivacyPage() {
   return (
     <LegalLayout title="Política de Privacidade">
       <p>
-        Esta Política explica como o <b>BarberFlow</b>, fornecido por <b>{COMPANY.name}</b> (CNPJ {COMPANY.cnpj}), trata
+        Esta Política explica como o <b>Kortta</b>, fornecido por <b>{COMPANY.name}</b> (CNPJ {COMPANY.cnpj}), trata
         dados pessoais, de acordo com a Lei nº 13.709/2018 (Lei Geral de Proteção de Dados — LGPD).
       </p>
 
       <h2>1. Papéis de cada um</h2>
       <ul>
         <li>
-          <b>Dados de quem usa o sistema</b> (donos e equipe das barbearias): o BarberFlow é o <b>controlador</b>.
+          <b>Dados de quem usa o sistema</b> (donos e equipe das barbearias): o Kortta é o <b>controlador</b>.
         </li>
         <li>
           <b>Dados dos clientes das barbearias</b> (cadastrados pela barbearia ou informados no agendamento on-line): a
-          barbearia é a <b>controladora</b> e o BarberFlow é o <b>operador</b>, que trata os dados apenas conforme as
+          barbearia é a <b>controladora</b> e o Kortta é o <b>operador</b>, que trata os dados apenas conforme as
           instruções da barbearia e para prestar o serviço.
         </li>
       </ul>
