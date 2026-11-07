@@ -16,6 +16,18 @@ declare global {
 export const requireAuthenticatedUser: RequestHandler = (req, res, next) => {
   const userId = getAuth(req).userId;
   if (!userId) {
+    // Clerk explains why a request is signed out in these headers; log them
+    // so auth misconfiguration (wrong keys, cookies) is visible in the logs.
+    req.log?.warn(
+      {
+        clerkAuthStatus: res.getHeader("x-clerk-auth-status"),
+        clerkAuthReason: res.getHeader("x-clerk-auth-reason"),
+        clerkAuthMessage: res.getHeader("x-clerk-auth-message"),
+        hasSessionCookie: Boolean(req.headers.cookie?.includes("__session")),
+        hasBearer: Boolean(req.headers.authorization),
+      },
+      "Unauthenticated request",
+    );
     res.status(401).json({ error: "Faça login para continuar" });
     return;
   }
